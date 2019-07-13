@@ -27,8 +27,8 @@ ext {
     moduleGroupId = 'com.facebook.react'
 
     mavenRepoURL = "s3://atheer-maven/releases"
-    mavenRepoAccessKey = "AKIAVJVYS7MVY76TUBPN"
-    mavenRepoSecretKey = "gur7pkl9j1Mz/yMk1RuRto93kXgRFmk2c0ccX1ec"
+    mavenRepoAccessKey = "dummy"
+    mavenRepoSecretKey = "dummy"
 }
 
 allprojects {

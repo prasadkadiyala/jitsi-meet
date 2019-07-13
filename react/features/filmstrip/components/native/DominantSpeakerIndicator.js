@@ -15,6 +15,9 @@ export default class DominantSpeakerIndicator extends Component {
      * @inheritdoc
      */
     render() {
+        // Feature currently not supported
+        return null;
+
         return (
             <View style = { styles.dominantSpeakerIndicatorBackground }>
                 <Icon

@@ -45,6 +45,7 @@ public class ReactInstanceManagerHolder {
             new PictureInPictureModule(reactContext),
             new ProximityModule(reactContext),
             new WiFiStatsModule(reactContext),
+            new org.jitsi.meet.sdk.DeviceModule(reactContext),
             new org.jitsi.meet.sdk.invite.InviteModule(reactContext),
             new org.jitsi.meet.sdk.net.NAT64AddrInfoModule(reactContext)
         );

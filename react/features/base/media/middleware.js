@@ -1,5 +1,6 @@
 // @flow
 
+import { NativeModules } from 'react-native';
 import {
     createStartAudioOnlyEvent,
     createStartMutedConfigurationEvent,
@@ -12,7 +13,7 @@ import { MiddlewareRegistry } from '../redux';
 import { getPropertyValue } from '../settings';
 import { setTrackMuted, TRACK_ADDED } from '../tracks';
 
-import { setAudioMuted, setCameraFacingMode, setVideoMuted } from './actions';
+import { setAudioMuted, setCameraFacingMode, toggleCameraFacingMode, setVideoMuted } from './actions';
 import { CAMERA_FACING_MODE } from './constants';
 import {
     _AUDIO_INITIAL_MEDIA_STATE,
@@ -20,6 +21,45 @@ import {
 } from './reducer';
 
 const logger = require('jitsi-meet-logger').getLogger(__filename);
+
+// TODO (Karim): this is a hack!!! but couldn't find a better way to access dispatch in RCTDeviceEventEmitter
+var Store: Object = null;
+
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+
+const { WebRTCModule, DeviceModule } = NativeModules;
+
+RCTDeviceEventEmitter.addListener('toggleAudio', function(data) {
+    Object.keys(data).forEach((key) => {
+        if (key == 'audioState' && Store) {
+            logger.log('Event:toggleMute audioState=' + data[key]);
+            Store.dispatch(setAudioMuted(data[key], true));
+        }
+    });
+});
+
+RCTDeviceEventEmitter.addListener('toggleCamera', function(data) {
+    if (Store) {
+        Store.dispatch(toggleCameraFacingMode());
+    }
+});
+
+RCTDeviceEventEmitter.addListener('toggleFlashlight', function(data) {
+    Object.keys(data).forEach((key) => {
+        if (key == 'flashlightState') {
+            logger.log('Event:toggleFlashlight flashlightState=' + data[key]);
+            WebRTCModule.toggleFlashlight(data[key]);
+        }
+    });
+});
+
+RCTDeviceEventEmitter.addListener('hasTorch', function() {
+    let result = WebRTCModule.hasTorch();
+    result.then(function(hasTorch) {
+        logger.log('Event:hasTorch WebRTCModule.hasTorch=' + hasTorch);
+        DeviceModule.hasTorch(hasTorch);
+    });
+});
 
 /**
  * Implements the entry point of the middleware of the feature base/media.
@@ -30,6 +70,7 @@ const logger = require('jitsi-meet-logger').getLogger(__filename);
 MiddlewareRegistry.register(store => next => action => {
     switch (action.type) {
     case SET_ROOM:
+        Store = store;
         return _setRoom(store, next, action);
 
     case TRACK_ADDED: {
@@ -110,7 +151,7 @@ function _setRoom({ dispatch, getState }, next, action) {
     // the user i.e. the state of base/media. Eventually, practice/reality i.e.
     // the state of base/tracks will or will not agree with the desires.
     dispatch(setAudioMuted(audioMuted));
-    dispatch(setCameraFacingMode(CAMERA_FACING_MODE.USER));
+    dispatch(setCameraFacingMode(CAMERA_FACING_MODE.ENVIRONMENT));
     dispatch(setVideoMuted(videoMuted));
 
     // startAudioOnly

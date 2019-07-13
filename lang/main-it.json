@@ -475,5 +475,8 @@
     "deviceError": {
         "cameraPermission": "",
         "microphonePermission": ""
+    },
+    "atheer": {
+        "zoomDisabled": "Per questo feed, lo zoom è disabilitato"
     }
 }

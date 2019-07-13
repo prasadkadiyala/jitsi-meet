@@ -505,5 +505,8 @@
         "invite": "",
         "title": "",
         "tooltip": ""
+    },
+    "atheer": {
+        "zoomDisabled": "此資訊流中縮放已禁用"
     }
 }

@@ -523,5 +523,8 @@
         "invite": "In __app__ einladen",
         "title": "Konferenz-Zugriffsinformationen",
         "tooltip": "Zugriffsinformationen über die Konferenz abrufen"
+    },
+    "atheer": {
+        "zoomDisabled": "Zoomen ist in diesem Feed deaktiviert"
     }
 }

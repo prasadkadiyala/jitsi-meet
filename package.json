@@ -34,6 +34,7 @@
     "@atlaskit/tabs": "4.0.1",
     "@atlaskit/theme": "2.4.0",
     "@atlaskit/tooltip": "9.1.1",
+    "@webcomponents/url": "0.7.1",
     "autosize": "1.18.13",
     "es6-iterator": "2.0.3",
     "es6-symbol": "3.1.1",
@@ -66,13 +67,13 @@
     "react-native-locale-detector": "github:jitsi/react-native-locale-detector#845281e9fd4af756f6d0f64afe5cce08c63e5ee9",
     "react-native-prompt": "1.0.0",
     "react-native-sound": "0.10.9",
+    "react-native-swipe-gestures": "^1.0.3",
     "react-native-vector-icons": "4.4.2",
-    "react-native-webrtc": "github:jitsi/react-native-webrtc#b43081ec8357335ab82a2e236c0f6a6ed0b17f9f",
+    "react-native-webrtc": "github:masterhaowu/react-native-webrtc#9f774d70a4604343d8a97682d14c3f27f51f7999",
     "react-redux": "5.0.7",
     "redux": "4.0.0",
     "redux-thunk": "2.2.0",
     "styled-components": "1.4.6",
-    "url-polyfill": "github:github/url-polyfill#39734186de44612bc5a16eb25f5407adcc5b2e7c",
     "uuid": "3.1.0",
     "xmldom": "0.1.27"
   },
@@ -115,9 +116,7 @@
     "lint": "eslint . && flow",
     "validate": "npm ls"
   },
-  "pre-commit": [
-    "lint"
-  ],
+  "pre-commit": [],
   "browser": {
     "autosize": "./node_modules/autosize/build/jquery.autosize.js",
     "jQuery-Impromptu": "jQuery-Impromptu/src/jquery-impromptu.js"

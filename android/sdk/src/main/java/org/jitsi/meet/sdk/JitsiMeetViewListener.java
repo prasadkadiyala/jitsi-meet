@@ -68,4 +68,14 @@ public interface JitsiMeetViewListener {
      * file.
      */
     void onLoadConfigError(Map<String, Object> data);
+
+    void onMuteMic(Map<String, Object> data);
+
+    void onToggleFlashlight(Map<String, Object> data);
+
+    void onParticipantJoined(Map<String, Object> data);
+
+    void onParticipantLeft(Map<String, Object> data);
+
+    void onVideoCallZoomUpdated(Map<String, Object> data);
 }

@@ -172,6 +172,9 @@ class Toolbox extends Component<Props, State> {
      * @returns {React$Node}
      */
     _renderToolbar() {
+        // Hide the jitsi toolbar since we have our own
+        return null;
+
         const buttonSize = this._calculateButtonSize();
         let buttonStyles = toolbarButtonStyles;
         let toggledButtonStyles = toolbarToggledButtonStyles;

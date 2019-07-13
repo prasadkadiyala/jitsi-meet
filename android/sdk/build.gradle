@@ -149,7 +149,7 @@ publishing {
         aarArchive(MavenPublication) {
             groupId 'org.jitsi.react'
             artifactId 'jitsi-meet-sdk'
-            version '1.9.0'
+            version '1.9.0.24.9'
 
             artifact("${project.buildDir}/outputs/aar/${project.name}-release.aar") {
                 extension "aar"
@@ -183,6 +183,12 @@ publishing {
 
     }
     repositories {
-        maven { url "file:${rootProject.projectDir}/../../../jitsi/jitsi-maven-repository/releases" }
+        maven {
+            url rootProject.mavenRepoURL
+            credentials(AwsCredentials) {
+                accessKey rootProject.mavenRepoAccessKey
+                secretKey rootProject.mavenRepoSecretKey
+            }
+        }
     }
 }

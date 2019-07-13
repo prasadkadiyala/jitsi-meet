@@ -644,5 +644,8 @@
         "rejected": "Rejected",
         "ignored": "Ignored",
         "expired": "Expired"
+    },
+    "atheer": {
+        "zoomDisabled": "Zooming is disabled on this feed"
     }
 }

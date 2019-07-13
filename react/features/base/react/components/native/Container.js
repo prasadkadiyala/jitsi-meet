@@ -9,6 +9,8 @@ import {
 
 import AbstractContainer from '../AbstractContainer';
 
+const logger = require('jitsi-meet-logger').getLogger(__filename);
+
 /**
  * Represents a container of React Native/mobile {@link Component} children.
  *
@@ -33,7 +35,8 @@ export default class Container extends AbstractContainer {
             accessibilityLabel,
             accessible,
             onClick,
-            touchFeedback = onClick,
+            onPress,
+            touchFeedback = false,
             visible = true,
             ...props
         } = this.props;
@@ -62,7 +65,8 @@ export default class Container extends AbstractContainer {
                     {
                         accessibilityLabel,
                         accessible,
-                        onPress: onClick
+                        onPress: onClick,
+                        onLongPress: onPress
                     },
                     element);
         }

@@ -14,6 +14,23 @@ buildscript {
     }
 }
 
+ext {
+    buildToolsVersion = "26.0.2"
+    compileSdkVersion = 26
+    minSdkVersion    = 21
+    targetSdkVersion = 26
+
+    // The Maven artifact groupdId of the third-party react-native modules which
+    // Jitsi Meet SDK for Android depends on and which are not available in
+    // third-party Maven repositories so we have to deploy to a Maven repository
+    // of ours.
+    moduleGroupId = 'com.facebook.react'
+
+    mavenRepoURL = "s3://atheer-maven/releases"
+    mavenRepoAccessKey = "AKIAVJVYS7MVY76TUBPN"
+    mavenRepoSecretKey = "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"
+}
+
 allprojects {
     repositories {
         google()
@@ -48,7 +65,13 @@ allprojects {
         publishing {
             publications {}
             repositories {
-                maven { url "file:${rootProject.projectDir}/../../../jitsi/jitsi-maven-repository/releases" }
+                maven {
+                    url rootProject.mavenRepoURL
+                    credentials(AwsCredentials) {
+                        accessKey rootProject.mavenRepoAccessKey
+                        secretKey rootProject.mavenRepoSecretKey
+                    }
+                }
             }
         }
     }
@@ -141,19 +164,6 @@ allprojects {
             }
         }
     }
-}
-
-ext {
-    buildToolsVersion = "26.0.2"
-    compileSdkVersion = 26
-    minSdkVersion    = 16
-    targetSdkVersion = 26
-
-    // The Maven artifact groupdId of the third-party react-native modules which
-    // Jitsi Meet SDK for Android depends on and which are not available in
-    // third-party Maven repositories so we have to deploy to a Maven repository
-    // of ours.
-    moduleGroupId = 'com.facebook.react'
 }
 
 // Force the version of the Android build tools we have chosen on all

@@ -106,6 +106,31 @@ public class MainActivity extends JitsiMeetActivity {
                 public void onLoadConfigError(Map<String, Object> data) {
                     on("LOAD_CONFIG_ERROR", data);
                 }
+
+                @Override
+                public void onMuteMic(Map<String, Object> data) {
+                    on("MUTE_MIC", data);
+                }
+
+                @Override
+                public void onToggleFlashlight(Map<String, Object> data) {
+                    on("TOGGLE_FLASHLIGHT", data);
+                }
+
+                @Override
+                public void onParticipantJoined(Map<String, Object> data) {
+                    on("PARTICIPANT_JOINED", data);
+                }
+
+                @Override
+                public void onParticipantLeft(Map<String, Object> data) {
+                    on("PARTICIPANT_LEFT", data);
+                }
+
+                @Override
+                public void onVideoCallZoomUpdated(Map<String, Object> data) {
+                    on("VIDEO_CALL_ZOOM_UPDATED", data);
+                }
             });
 
             // inviteController
@@ -198,7 +223,7 @@ public class MainActivity extends JitsiMeetActivity {
             InviteControllerListener.class.getSimpleName() + ".beginAddPeople");
 
         String query = ADD_PEOPLE_CONTROLLER_QUERY;
-    
+
         if (query != null
                 && (inviteController.isAddPeopleEnabled()
                     || inviteController.isDialOutEnabled())) {

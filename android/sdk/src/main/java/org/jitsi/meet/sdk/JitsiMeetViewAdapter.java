@@ -46,4 +46,24 @@ public abstract class JitsiMeetViewAdapter implements JitsiMeetViewListener {
     @Override
     public void onLoadConfigError(Map<String, Object> data) {
     }
+
+    @Override
+    public void onMuteMic(Map<String, Object> data) {
+    }
+
+    @Override
+    public void onToggleFlashlight(Map<String, Object> data) {
+    }
+
+    @Override
+    public void onParticipantJoined(Map<String, Object> data) {
+    }
+
+    @Override
+    public void onParticipantLeft(Map<String, Object> data) {
+    }
+
+    @Override
+    public void onVideoCallZoomUpdated(Map<String, Object> data) {
+    }
 }

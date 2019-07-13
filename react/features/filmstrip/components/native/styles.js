@@ -39,8 +39,14 @@ export default createStyleSheet(platformIndependentStyles, {
      * Video thumbnail style.
      */
     thumbnail: {
-        height: 80,
-        width: 80
+    },
+
+    thumbnailContainer: {
+    },
+
+    thumbnailVideo: {
+        height: 150,
+        width: 110
     },
 
     /**

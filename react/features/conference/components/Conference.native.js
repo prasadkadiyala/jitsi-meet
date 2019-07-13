@@ -10,7 +10,10 @@ import { appNavigate } from '../../app';
 import { connect, disconnect } from '../../base/connection';
 import { DialogContainer } from '../../base/dialog';
 import { CalleeInfoContainer } from '../../base/jwt';
-import { getParticipantCount } from '../../base/participants';
+import {
+        getParticipantCount,
+        hideParticipantTools
+        } from '../../base/participants';
 import { Container, LoadingIndicator, TintedView } from '../../base/react';
 import { TestConnectionInfo } from '../../base/testing';
 import { createDesiredLocalTracks } from '../../base/tracks';
@@ -21,6 +24,8 @@ import { setToolboxVisible, Toolbox } from '../../toolbox';
 
 import ConferenceIndicators from './ConferenceIndicators';
 import styles from './styles';
+
+const logger = require('jitsi-meet-logger').getLogger(__filename);
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
@@ -84,6 +89,8 @@ type Props = {
      * @private
      */
     _setToolboxVisible: Function,
+
+    _clearExtendedTools: Function,
 
     /**
      * The indicator which determines whether the Toolbox is visible.
@@ -293,6 +300,7 @@ class Conference extends Component<Props> {
         const toolboxVisible = !this.props._toolboxVisible;
 
         this.props._setToolboxVisible(toolboxVisible);
+        this.props._clearExtendedTools();
     }
 
     _onHardwareBackPress: () => boolean;
@@ -383,6 +391,10 @@ function _mapDispatchToProps(dispatch) {
          */
         _setToolboxVisible(visible) {
             dispatch(setToolboxVisible(visible));
+        },
+
+        _clearExtendedTools() {
+            dispatch(hideParticipantTools(null));
         }
     };
 }

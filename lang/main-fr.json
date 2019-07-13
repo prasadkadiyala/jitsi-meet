@@ -520,5 +520,8 @@
         "invite": "Inviter à __app__",
         "title": "Informations sur la conférence",
         "tooltip": "Obtenir des informations d'accès"
+    },
+    "atheer": {
+        "zoomDisabled": "Le zoom est désactivé sur ce flux"
     }
 }

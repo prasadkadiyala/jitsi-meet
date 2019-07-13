@@ -53,6 +53,7 @@ export default createStyleSheet({
         // Both on Android and iOS there is the status bar which may be visible.
         // On iPhone X there is the notch. In the two cases BoxModel.margin is
         // not enough.
-        top: BoxModel.margin * 3
+        // Our status bar is disabled so moved the filmstrip to be top left
+        top: 0
     }
 });

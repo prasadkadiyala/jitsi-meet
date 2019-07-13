@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.rnimmersive.RNImmersiveModule;
 
@@ -67,6 +68,8 @@ public class JitsiMeetView extends FrameLayout {
 
         return null;
     }
+
+    private static OnHasTorchListener hasTorchListener = null;
 
     /**
      * Loads a specific URL {@code String} in all existing
@@ -251,6 +254,12 @@ public class JitsiMeetView extends FrameLayout {
     private volatile String url;
 
     /**
+     * Set the size of the remote video view. They need to be set before loadURLObject is called.
+     */
+    private String remoteVideoViewWidth;
+    private String remoteVideoViewHeight;
+
+    /**
      * Whether the Welcome page is enabled.
      */
     private boolean welcomePageEnabled;
@@ -423,6 +432,15 @@ public class JitsiMeetView extends FrameLayout {
         // welcomePageEnabled
         props.putBoolean("welcomePageEnabled", welcomePageEnabled);
 
+        // remote view size
+        if (remoteVideoViewWidth != null && !remoteVideoViewWidth.isEmpty() &&
+                remoteVideoViewHeight != null && !remoteVideoViewHeight.isEmpty()) {
+            props.putString("remoteViewWidth", remoteVideoViewWidth);
+            props.putString("remoteViewHeight", remoteVideoViewHeight);
+        } else {
+            Log.e(TAG, "RemoteVideoView size is not set. Call setRemoteVideoViewSize to set the size before you connect.");
+        }
+
         // XXX The method loadURLObject: is supposed to be imperative i.e.
         // a second invocation with one and the same URL is expected to join
         // the respective conference again if the first invocation was followed
@@ -588,5 +606,34 @@ public class JitsiMeetView extends FrameLayout {
      */
     public void setWelcomePageEnabled(boolean welcomePageEnabled) {
         this.welcomePageEnabled = welcomePageEnabled;
+    }
+
+    public void setRemoteVideoViewSize(int width, int height) {
+        remoteVideoViewWidth = Integer.toString(width);
+        remoteVideoViewHeight = Integer.toString(height);
+    }
+
+    public void sendEvent(String eventName) {
+        ReactContextUtils.emitEvent(
+                ReactInstanceManagerHolder.getReactInstanceManager().getCurrentReactContext(), eventName, null);
+    }
+
+    public void sendEvent(String eventName, WritableNativeMap map) {
+        ReactContextUtils.emitEvent(
+                ReactInstanceManagerHolder.getReactInstanceManager().getCurrentReactContext(), eventName, map);
+    }
+
+    public static void setOnHasTorchListener(OnHasTorchListener listener) {
+        hasTorchListener = listener;
+    }
+
+    public static void hasTorch(boolean result) {
+        if (hasTorchListener != null) {
+            hasTorchListener.execute(result);
+        }
+    }
+
+    public interface OnHasTorchListener {
+        void execute(boolean result);
     }
 }

@@ -13,6 +13,9 @@ export default class ModeratorIndicator extends Component {
      * @inheritdoc
      */
     render() {
+        // Feature not supported
+        return null;
+
         return (
             <Icon
                 name = 'star'

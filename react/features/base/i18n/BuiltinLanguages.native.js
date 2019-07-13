@@ -19,6 +19,12 @@ const _LANGUAGES = {
         main: require('../../../../lang/main-de')
     },
 
+    // Greek
+    'el': {
+        languages: require('../../../../lang/languages-el'),
+        main: require('../../../../lang/main-el')
+    },
+
     // Esperanto
     'eo': {
         languages: require('../../../../lang/languages-eo'),
@@ -47,6 +53,12 @@ const _LANGUAGES = {
     'it': {
         languages: require('../../../../lang/languages-it'),
         main: require('../../../../lang/main-it')
+    },
+
+    // Japanese
+    'ja': {
+        languages: require('../../../../lang/languages-ja'),
+        main: require('../../../../lang/main-ja')
     },
 
     // Norwegian Bokmal

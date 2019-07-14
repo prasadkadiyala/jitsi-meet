@@ -40,6 +40,8 @@ import styles from './styles';
 
 import type { AbstractProps } from '../AbstractConference';
 
+import type { Dispatch } from 'redux';
+
 const logger = require('jitsi-meet-logger').getLogger(__filename);
 
 /**
@@ -141,6 +143,7 @@ class Conference extends AbstractConference<Props, *> {
         this._onClick = this._onClick.bind(this);
         this._onHardwareBackPress = this._onHardwareBackPress.bind(this);
         this._setToolboxVisible = this._setToolboxVisible.bind(this);
+        this._clearExtendedTools = this._clearExtendedTools.bind(this);
     }
 
     /**
@@ -299,7 +302,7 @@ class Conference extends AbstractConference<Props, *> {
      */
     _onClick() {
         this._setToolboxVisible(!this.props._toolboxVisible);
-        this.props._clearExtendedTools();
+        this._clearExtendedTools();
     }
 
     _onHardwareBackPress: () => boolean;
@@ -389,7 +392,7 @@ class Conference extends AbstractConference<Props, *> {
     }
 
     _clearExtendedTools() {
-        dispatch(hideParticipantTools(null));
+        this.props.dispatch(hideParticipantTools(null));
     }
 }
 

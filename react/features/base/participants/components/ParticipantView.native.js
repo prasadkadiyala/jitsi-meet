@@ -298,6 +298,7 @@ function _mapStateToProps(state, ownProps) {
     let avatar;
     let connectionStatus;
     let participantName;
+    let isLocal = false;
 
     if (participant) {
         avatar = getAvatarURL(participant);
@@ -319,6 +320,8 @@ function _mapStateToProps(state, ownProps) {
         // so it's advisable to prefetch here.
         avatar && !avatar.startsWith('#')
             && FastImage.preload([ { uri: avatar } ]);
+
+        isLocal = participant.local;
     }
 
     return {
@@ -333,7 +336,7 @@ function _mapStateToProps(state, ownProps) {
                 state['features/base/tracks'],
                 MEDIA_TYPE.VIDEO,
                 participantId),
-            isLocal: participant.local
+        isLocal: isLocal
     };
 }
 

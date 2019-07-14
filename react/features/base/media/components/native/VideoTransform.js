@@ -103,7 +103,7 @@ type Props = {
     /**
      * Action to dispatch when the component is unmounted.
      */
-    _onUnmount: Function
+    _onUnmount: Function,
 
     _onSendTransform: Function,
 
@@ -855,8 +855,7 @@ function _mapStateToProps(state) {
          * @private
          * @type {Object}
          */
-        _transforms: state['features/base/media'].video.transforms
-
+        _transforms: state['features/base/media'].video.transforms,
         _targetZoomScale: state['features/large-video'].zoom,
         _targetZoomPosX: state['features/large-video'].x,
         _targetZoomPosY: state['features/large-video'].y,

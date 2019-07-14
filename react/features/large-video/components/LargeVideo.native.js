@@ -197,7 +197,7 @@ class LargeVideo extends Component<Props, State> {
                     <Text style = { styles.zoomToastTest }>
                         { t('atheer.zoomDisabled') }
                     </Text>
-                </ParticipantView> }
+                </Container> }
             </DimensionsDetector>
         );
     }

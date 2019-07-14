@@ -8,7 +8,7 @@ import { PIP_ENABLED, getFeatureFlag } from '../../../base/flags';
 import {
         getParticipantCount,
         hideParticipantTools
-        } from '../../base/participants';
+        } from '../../../base/participants';
 import { Container, LoadingIndicator, TintedView } from '../../../base/react';
 import { connect } from '../../../base/redux';
 import {

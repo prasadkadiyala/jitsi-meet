@@ -130,8 +130,7 @@ class Filmstrip extends Component<Props> {
 
         return (
             <Container
-                style = { filmstripStyle }
-                visible = { this.props._visible }>
+                style = { filmstripStyle } >
                 {
                     this._separateLocalThumbnail
                         && !isNarrowAspectRatio_
@@ -161,11 +160,12 @@ class Filmstrip extends Component<Props> {
                             && <LocalThumbnail />
                     }
                     {
+                        /* eslint-disable react/jsx-wrap-multilines */
 
                         this._sort(
                                 this.props._participants,
                                 isNarrowAspectRatio_)
-                            .map(p => (
+                            .map(p =>
                                 !this.props._isGlass && <Thumbnail
                                     key = { p.id }
                                     participant = { p }
@@ -173,13 +173,14 @@ class Filmstrip extends Component<Props> {
                                     participantsFlashOn = {this.props._participantsFlashOn }
                                     allowToolTips = { true } />)
 
+                        /* eslint-enable react/jsx-wrap-multilines */
                     }
                     {
                         !this._separateLocalThumbnail
                             && isNarrowAspectRatio_
                             && <LocalThumbnail />
                     }
-                </ScrollView>
+                </ScrollView> }
                 {
                     this._separateLocalThumbnail
                         && isNarrowAspectRatio_

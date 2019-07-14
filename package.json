@@ -78,6 +78,7 @@
     "react-native-watch-connectivity": "0.2.0",
     "react-native-webrtc": "github:jitsi/react-native-webrtc#4064c6f2db4f8b961daaaa8dafc6a896d7cfbc43",
     "react-native-webview": "5.8.1",
+    "react-native-swipe-gestures": "^1.0.3",
     "react-redux": "5.0.7",
     "react-textarea-autosize": "7.1.0",
     "react-transition-group": "2.4.0",
@@ -129,8 +130,7 @@
     "lint": "eslint . && flow",
     "validate": "npm ls"
   },
-  "pre-commit": [
-  ],
+  "pre-commit": [],
   "browser": {
     "jQuery-Impromptu": "jQuery-Impromptu/src/jquery-impromptu.js"
   }

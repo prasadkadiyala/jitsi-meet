@@ -237,7 +237,7 @@ class Thumbnail extends Component<Props> {
         const hasTorch = this.props._hasTorch;
 
         const fromZoomParticipantId = _fromZoomParticipantId;
-        const fromZoomParticipantLevel = ._fromZoomParticipantLevel;
+        const fromZoomParticipantLevel = _fromZoomParticipantLevel;
         const toZoomParticipantId = _toZoomParticipantId;
         const toZoomParticipantLevel = _toZoomParticipantLevel;
 
@@ -363,6 +363,11 @@ class Thumbnail extends Component<Props> {
             </View>
         );
     }
+
+    static setRemoteViewSize(width, height) {
+        Thumbnail.remoteViewWidth = width;
+        Thumbnail.remoteViewHeight = height;
+    }
 }
 
 /**
@@ -448,11 +453,6 @@ function _mapDispatchToProps(dispatch: Function, ownProps): Object {
 
             dispatch(setFilmstripVisible(false));
         },
-
-        static setRemoteViewSize(width, height) {
-            Thumbnail.remoteViewWidth = width;
-            Thumbnail.remoteViewHeight = height;
-        }
     };
 }
 

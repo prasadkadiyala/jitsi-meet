@@ -13,7 +13,9 @@ import {
     PARTICIPANT_JOINED,
     PARTICIPANT_LEFT,
     PARTICIPANT_UPDATED,
-    PIN_PARTICIPANT
+    PIN_PARTICIPANT,
+    SHOW_PARTICIPANT_TOOLS,
+    HIDE_PARTICIPANT_TOOLS
 } from './actionTypes';
 import {
     getLocalParticipant,
@@ -444,6 +446,24 @@ export function participantKicked(kicker, kicked) {
 export function pinParticipant(id) {
     return {
         type: PIN_PARTICIPANT,
+        participant: {
+            id
+        }
+    };
+}
+
+export function showParticipantTools(id) {
+    return {
+        type: SHOW_PARTICIPANT_TOOLS,
+        participant: {
+            id
+        }
+    };
+}
+
+export function hideParticipantTools(id) {
+    return {
+        type: HIDE_PARTICIPANT_TOOLS,
         participant: {
             id
         }

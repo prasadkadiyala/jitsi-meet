@@ -20,6 +20,36 @@ import {
     VIDEO_QUALITY_LEVELS
 } from './constants';
 
+// TODO (Karim): Find a cleaner way to send this ID.
+// I tried to send this value with appProp but didn't work because I don't have access to a state.
+// For now falling back to sending it through an event
+var ParticipantName; // this contains the users hash of the local user
+
+var AtheerAvatarURL;
+
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
+
+var _conference;
+
+RCTDeviceEventEmitter.addListener('setParticipantName', function(data) {
+    Object.keys(data).forEach((key) => {
+        if (key == 'userHash') {
+            ParticipantName = data[key];
+            if (_conference) {
+                _conference.setDisplayName(data[key]);
+            }
+        }
+    });
+});
+
+RCTDeviceEventEmitter.addListener('setParticipantAvatar', function(data) {
+    Object.keys(data).forEach((key) => {
+        if (key == 'avatarUrl') {
+            AtheerAvatarURL = data[key];
+        }
+    });
+});
+
 const logger = require('jitsi-meet-logger').getLogger(__filename);
 
 /**
@@ -318,8 +348,8 @@ export function sendLocalParticipant(
     avatarID && conference.sendCommand(AVATAR_ID_COMMAND, {
         value: avatarID
     });
-    avatarURL && conference.sendCommand(AVATAR_URL_COMMAND, {
-        value: avatarURL
+    AtheerAvatarURL && conference.sendCommand(AVATAR_URL_COMMAND, {
+        value: AtheerAvatarURL
     });
     email && conference.sendCommand(EMAIL_COMMAND, {
         value: email
@@ -329,5 +359,7 @@ export function sendLocalParticipant(
         conference.setLocalParticipantProperty('features_screen-sharing', true);
     }
 
-    conference.setDisplayName(name);
+    conference.setDisplayName(ParticipantName);
+
+    _conference = conference;
 }

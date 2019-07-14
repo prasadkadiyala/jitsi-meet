@@ -5,7 +5,10 @@ import { BackHandler, NativeModules, SafeAreaView, StatusBar, View } from 'react
 
 import { appNavigate } from '../../../app';
 import { PIP_ENABLED, getFeatureFlag } from '../../../base/flags';
-import { getParticipantCount } from '../../../base/participants';
+import {
+        getParticipantCount,
+        hideParticipantTools
+        } from '../../base/participants';
 import { Container, LoadingIndicator, TintedView } from '../../../base/react';
 import { connect } from '../../../base/redux';
 import {
@@ -36,6 +39,8 @@ import NavigationBar from './NavigationBar';
 import styles from './styles';
 
 import type { AbstractProps } from '../AbstractConference';
+
+const logger = require('jitsi-meet-logger').getLogger(__filename);
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
@@ -103,6 +108,8 @@ type Props = AbstractProps & {
      * @returns {void}
      */
     _setToolboxVisible: Function,
+
+    _clearExtendedTools: Function,
 
     /**
      * The indicator which determines whether the Toolbox is visible.
@@ -292,6 +299,7 @@ class Conference extends AbstractConference<Props, *> {
      */
     _onClick() {
         this._setToolboxVisible(!this.props._toolboxVisible);
+        this.props._clearExtendedTools();
     }
 
     _onHardwareBackPress: () => boolean;
@@ -378,6 +386,10 @@ class Conference extends AbstractConference<Props, *> {
      */
     _setToolboxVisible(visible) {
         this.props.dispatch(setToolboxVisible(visible));
+    }
+
+    _clearExtendedTools() {
+        dispatch(hideParticipantTools(null));
     }
 }
 

@@ -1,8 +1,10 @@
 // @flow
 
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, Image } from 'react-native';
 import type { Dispatch } from 'redux';
+import { Icon } from '../../../base/font-icons';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 import { ColorSchemeRegistry } from '../../../base/color-scheme';
 import { openDialog } from '../../../base/dialog';
@@ -11,7 +13,10 @@ import {
     PARTICIPANT_ROLE,
     ParticipantView,
     isEveryoneModerator,
-    pinParticipant
+    pinParticipant,
+    showParticipantTools,
+    hideParticipantTools,
+    getParticipantDisplayName
 } from '../../../base/participants';
 import { Container } from '../../../base/react';
 import { connect } from '../../../base/redux';
@@ -28,6 +33,13 @@ import ModeratorIndicator from './ModeratorIndicator';
 import RaisedHandIndicator from './RaisedHandIndicator';
 import styles, { AVATAR_SIZE } from './styles';
 import VideoMutedIndicator from './VideoMutedIndicator';
+import { selectParticipant, selectParticipantInLargeVideo } from '../../../large-video/actions';
+import { muteMic, toggleFlashlight, setFilmstripVisible } from '../../actions';
+
+const logger = require('jitsi-meet-logger').getLogger(__filename);
+
+export const DEFAULT_THUMBNAIL_HEIGHT = 80;
+export const DEFAULT_THUMBNAIL_WIDTH = 100;
 
 /**
  * Thumbnail component's property types.
@@ -53,6 +65,38 @@ type Props = {
      * Handles click/tap event on the thumbnail.
      */
     _onClick: ?Function,
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onPress: ?Function,
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onShowTools: ?Function,
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onHideTools: ?Function,
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onClickMute: ?Function,
+
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onClickFlashlight: ?Function,
+
+
+    /**
+     * Handles click/tap event on the thumbnail.
+     */
+    _onSwipeRight: ?Function,
 
     /**
      * Handles long press on the thumbnail.
@@ -99,7 +143,25 @@ type Props = {
     /**
      * If true, it tells the thumbnail that it needs to behave differently. E.g. react differently to a single tap.
      */
-    tileView?: boolean
+    tileView?: boolean,
+
+    extendedToolsParticipant: Object,
+
+    participantsFlashOn: Object,
+
+    _reRedner: Object,
+
+    allowToolTips: Object,
+
+    _hasTorch: Object,
+
+    _fromZoomParticipantId: Object,
+
+    _fromZoomParticipantLevel: Object,
+
+    _toZoomParticipantId: Object,
+
+    _toZoomParticipantLevel: Object
 };
 
 /**
@@ -126,8 +188,29 @@ class Thumbnail extends Component<Props> {
             disableTint,
             participant,
             renderDisplayName,
-            tileView
+            tileView,
+            extendedToolsParticipant: extendedToolsParticipant,
+            participantsFlashOn: participantsFlashOn,
+            _reRedner: _reRedner,
+            allowToolTips: allowToolTips,
+            _hasTorch: _hasTorch,
+            _fromZoomParticipantId: _fromZoomParticipantId,
+            _fromZoomParticipantLevel: _fromZoomParticipantLevel,
+            _toZoomParticipantId: _toZoomParticipantId,
+            _toZoomParticipantLevel: _toZoomParticipantLevel
         } = this.props;
+
+        if (!Thumbnail.remoteViewWidth || Thumbnail.remoteViewWidth > DEFAULT_THUMBNAIL_WIDTH) {
+            Thumbnail.remoteViewWidth = DEFAULT_THUMBNAIL_WIDTH;
+        }
+        if (!Thumbnail.remoteViewHeight || Thumbnail.remoteViewHeight > DEFAULT_THUMBNAIL_HEIGHT) {
+            Thumbnail.remoteViewHeight = DEFAULT_THUMBNAIL_HEIGHT;
+        }
+
+        let styleDimension = {
+            width: Thumbnail.remoteViewWidth,
+            height: Thumbnail.remoteViewHeight
+        }
 
         // We don't render audio in any of the following:
         // 1. The audio (source) is muted. There's no practical reason (that we
@@ -142,65 +225,142 @@ class Thumbnail extends Component<Props> {
             = participantId === largeVideo.participantId;
         const videoMuted = !videoTrack || videoTrack.muted;
 
+        const showTools = extendedToolsParticipant == participantId;
+
+        const flashlightOn = participantsFlashOn && participantsFlashOn.indexOf(participantId) != -1;
+
+        const config = {
+            velocityThreshold: 0.1,
+            directionalOffsetThreshold: 30
+        };
+
+        const hasTorch = this.props._hasTorch;
+
+        const fromZoomParticipantId = _fromZoomParticipantId;
+        const fromZoomParticipantLevel = ._fromZoomParticipantLevel;
+        const toZoomParticipantId = _toZoomParticipantId;
+        const toZoomParticipantLevel = _toZoomParticipantLevel;
+
+        // If someone else is zooming, show zoom disabled on the corresponding thumbnail.
+        var fromZoomDisabled = false;
+        if ((fromZoomParticipantId == participantId && fromZoomParticipantLevel > 1) ||
+            (fromZoomParticipantId == 'localuser' && fromZoomParticipantLevel > 1 && participant.local)) {
+            fromZoomDisabled = true;
+        }
+
+        // If device user is zooming, show zooming active on the corresponding thumbnail.
+        var toZoomDisabled = false;
+        if (toZoomParticipantId == participantId && toZoomParticipantLevel > 1) {
+            toZoomDisabled = true;
+        }
+
         return (
-            <Container
-                onClick = { _onClick }
-                onLongPress = { participant.local ? undefined : _onShowRemoteVideoMenu }
-                style = { [
-                    styles.thumbnail,
-                    participant.pinned && !tileView
-                        ? _styles.thumbnailPinned : null,
-                    this.props.styleOverrides || null
-                ] }
-                touchFeedback = { false }>
+            <View style = { styles.thumbnailContainer }>
+                <GestureRecognizer
+                    onSwipeRight={this._onSwipeRight}
+                    config={config} >
 
-                { renderAudio
-                    && <Audio
-                        stream
-                            = { audioTrack.jitsiTrack.getOriginalStream() } /> }
+                    <Container
+                        onClick = { this._onClick }
+                        onPress = { this._onPress }
+                        style = { [ style, styleDimension ] }>
 
-                <ParticipantView
-                    avatarSize = { AVATAR_SIZE }
-                    participantId = { participantId }
-                    style = { _styles.participantViewStyle }
-                    tintEnabled = { participantInLargeVideo && !disableTint }
-                    tintStyle = { _styles.activeThumbnailTint }
-                    zOrder = { 1 } />
+                        { renderAudio
+                            && <Audio
+                                stream
+                                    = { audioTrack.jitsiTrack.getOriginalStream() } /> }
 
-                { renderDisplayName && <DisplayNameLabel participantId = { participantId } /> }
+                        <ParticipantView
+                            avatarSize = { AVATAR_SIZE }
+                            participantId = { participantId }
+                            showAvatar = { participantNotInLargeVideo }
+                            showVideo = { true }
+                            zOrder = { 1 }
+                            isLargeVideo = { false } />
 
-                { !_isEveryoneModerator && participant.role === PARTICIPANT_ROLE.MODERATOR
-                    && <View style = { styles.moderatorIndicatorContainer }>
-                        <ModeratorIndicator />
-                    </View> }
+                        { participant.role === PARTICIPANT_ROLE.MODERATOR
+                            && <ModeratorIndicator /> }
 
-                <View
-                    style = { [
-                        styles.thumbnailTopIndicatorContainer,
-                        styles.thumbnailTopLeftIndicatorContainer
-                    ] }>
-                    <RaisedHandIndicator participantId = { participant.id } />
-                    { participant.dominantSpeaker
-                        && <DominantSpeakerIndicator /> }
-                </View>
+                        { participant.dominantSpeaker
+                            && <DominantSpeakerIndicator /> }
 
-                <View
-                    style = { [
-                        styles.thumbnailTopIndicatorContainer,
-                        styles.thumbnailTopRightIndicatorContainer
-                    ] }>
-                    <ConnectionIndicator participantId = { participant.id } />
-                </View>
+                        { fromZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
+                                            styles.thumbnailToolBackgroundDisabled ] }>
+                            <Icon
+                                name = 'Disabled-Zooming'
+                                style = { [ styles.thumbnailToolIcon,
+                                            styles.thumbnailToolIconPressed ] } />
+                        </View> }
 
-                <Container style = { styles.thumbnailIndicatorContainer }>
-                    { audioMuted
-                        && <AudioMutedIndicator /> }
+                        { toZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
+                                            styles.thumbnailToolBackgroundHighlighted ] }>
+                            <Icon
+                                name = 'Active-Zooming'
+                                style = { [ styles.thumbnailToolIcon,
+                                            styles.thumbnailToolIconPressed ] } />
+                        </View> }
 
-                    { videoMuted
-                        && <VideoMutedIndicator /> }
-                </Container>
+                        <Container
+                            style = { styles.thumbnailIndicatorContainer }>
+                            { audioMuted
+                                && <AudioMutedIndicator /> }
 
-            </Container>
+                            { videoMuted
+                                && <VideoMutedIndicator /> }
+                        </Container>
+
+                    </Container>
+
+                </GestureRecognizer>
+
+                { allowToolTips && !showTools && <Container
+                    onClick = { this._onShowTools }
+                    style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
+                    <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
+                        onPress = { this._onShowTools }>
+                        <Icon name = 'atheer-menu-down'
+                        style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
+                    </View>
+                </Container> }
+
+                { allowToolTips && showTools && <Container
+                    onClick = { this._onHideTools }
+                    style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
+                    <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
+                        onPress = { this._onHideTools }>
+                        <Icon name = 'atheer-menu-up'
+                        style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
+                    </View>
+                </Container> }
+
+                { showTools && <View>
+                    <Container
+                        onClick = { this._onClickMute }
+                        style = { [ styles.thumbnailTools, styles.thumbnailToolsTopMargin ] }>
+                        <View style = { [ styles.thumbnailToolBackground,
+                                        audioMuted ? styles.thumbnailToolBackgroundDisabled : styles.thumbnailToolBackgroundNormal ] }
+                            onPress = { this._onClickMute }>
+                            <Icon name = 'atheer-mic'
+                            style = { [ styles.thumbnailToolIcon,
+                                    audioMuted ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                        </View>
+                    </Container>
+                    <Container
+                        onClick = { this._onClickFlashlight }
+                        style = { [ styles.thumbnailTools, styles.thumbnailToolsMiddleMargin ] }>
+                        <View style = { [ styles.thumbnailToolBackground,
+                                        !hasTorch ? styles.thumbnailToolBackgroundDisabled : null,
+                                        (hasTorch && flashlightOn) ? styles.thumbnailToolBackgroundHighlighted : null,
+                                        (hasTorch && !flashlightOn) ? styles.thumbnailToolBackgroundNormal : null ] }>
+                            <Icon name = 'atheer-flashlight'
+                            style = { [ styles.thumbnailToolIcon,
+                                        (flashlightOn || !hasTorch) ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                        </View>
+                    </Container>
+
+                </View> }
+
+            </View>
         );
     }
 }
@@ -226,11 +386,8 @@ function _mapDispatchToProps(dispatch: Function, ownProps): Object {
         _onClick() {
             const { participant, tileView } = ownProps;
 
-            if (tileView) {
-                dispatch(toggleToolboxVisible());
-            } else {
-                dispatch(pinParticipant(participant.pinned ? null : participant.id));
-            }
+            dispatch(pinParticipant(participant.id));
+            dispatch(selectParticipantInLargeVideo());
         },
 
         /**
@@ -244,6 +401,57 @@ function _mapDispatchToProps(dispatch: Function, ownProps): Object {
             dispatch(openDialog(RemoteVideoMenu, {
                 participant
             }));
+        },
+
+        _onPress() {
+            const { dispatch, participant } = this.props;
+
+            dispatch(showParticipantTools(participant.id));
+        },
+
+        _onShowTools() {
+            const { dispatch, participant } = this.props;
+
+            dispatch(showParticipantTools(participant.id));
+        },
+
+        _onHideTools() {
+            const { dispatch, participant } = this.props;
+
+            dispatch(hideParticipantTools(null));
+        },
+
+        _onClickMute() {
+            const { dispatch, participant } = this.props;
+
+            const audioTrack = this.props._audioTrack;
+            const audioMuted = !audioTrack || audioTrack.muted;
+
+            if (!audioMuted) {
+                dispatch(muteMic(participant.id));
+            }
+
+        },
+
+        _onClickFlashlight() {
+            const { dispatch, participant } = this.props;
+
+            const participantsFlashOn = this.props.participantsFlashOn;
+            const participantId = participant.id;
+            const flashlightOn = participantsFlashOn && participantsFlashOn.indexOf(participantId) != -1;
+
+            dispatch(toggleFlashlight(participant.id, !flashlightOn));
+        },
+
+        _onSwipeRight(gestureState) {
+            const { dispatch, participant } = this.props;
+
+            dispatch(setFilmstripVisible(false));
+        },
+
+        static setRemoteViewSize(width, height) {
+            Thumbnail.remoteViewWidth = width;
+            Thumbnail.remoteViewHeight = height;
         }
     };
 }
@@ -266,18 +474,35 @@ function _mapStateToProps(state, ownProps) {
     // the stage i.e. as a large video.
     const largeVideo = state['features/large-video'];
     const tracks = state['features/base/tracks'];
+    const { participantsFlashOn, reRender, participantsFlashDisabled } = state['features/filmstrip'];
     const id = ownProps.participant.id;
+    const name = ownProps.participant.name;
+    var hasTorch = false;
+    if (name && !name.includes('Admin')) {
+        hasTorch = true;
+    }
+    if (participantsFlashDisabled && participantsFlashDisabled.indexOf(id) != -1) {
+        hasTorch = false;
+    }
     const audioTrack
         = getTrackByMediaTypeAndParticipant(tracks, MEDIA_TYPE.AUDIO, id);
     const videoTrack
         = getTrackByMediaTypeAndParticipant(tracks, MEDIA_TYPE.VIDEO, id);
+
+    var displayname = getParticipantDisplayName(state, id);
 
     return {
         _audioTrack: audioTrack,
         _isEveryoneModerator: isEveryoneModerator(state),
         _largeVideo: largeVideo,
         _styles: ColorSchemeRegistry.get(state, 'Thumbnail'),
-        _videoTrack: videoTrack
+        _videoTrack: videoTrack,
+        _reRedner: reRender,
+        _hasTorch: hasTorch,
+        _fromZoomParticipantId: state['features/large-video'].zoomParticipantId,
+        _fromZoomParticipantLevel: state['features/large-video'].zoom,
+        _toZoomParticipantId: state['features/large-video'].toZoomParticipantId,
+        _toZoomParticipantLevel: state['features/large-video'].toZoomParticipantLevel
     };
 }
 

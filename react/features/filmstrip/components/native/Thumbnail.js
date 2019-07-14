@@ -207,6 +207,7 @@ class Thumbnail extends Component<Props> {
             Thumbnail.remoteViewHeight = DEFAULT_THUMBNAIL_HEIGHT;
         }
 
+        let style = styles.thumbnail;
         let styleDimension = {
             width: Thumbnail.remoteViewWidth,
             height: Thumbnail.remoteViewHeight
@@ -223,6 +224,8 @@ class Thumbnail extends Component<Props> {
         const participantId = participant.id;
         const participantInLargeVideo
             = participantId === largeVideo.participantId;
+        const participantNotInLargeVideo
+            = participantId !== largeVideo.participantId;    
         const videoMuted = !videoTrack || videoTrack.muted;
 
         const showTools = extendedToolsParticipant == participantId;

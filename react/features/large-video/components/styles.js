@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 
+import { ColorPalette } from '../../base/styles';
 import { ColorSchemeRegistry, schemeColor } from '../../base/color-scheme';
 
 /**

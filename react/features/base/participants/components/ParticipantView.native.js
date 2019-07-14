@@ -210,7 +210,7 @@ class ParticipantView extends Component<Props> {
 
         const waitForVideoStarted = false;
 
-        const atheerAvatar = avatar;
+        let atheerAvatar = avatar;
         // If avatar is null, or avatar is default jitsi avatar, replace with atheer avatar
         if (!atheerAvatar || atheerAvatar.includes('abotars.jitsi.net')) {
             atheerAvatar = DEFAULT_ATHEER_AVATAR_URL;

@@ -235,14 +235,14 @@ MiddlewareRegistry.register(store => next => action => {
         break;
 
     case MUTE_MIC:
-        _sendEvent(store, _getSymbolDescription(type),
+        sendEvent(store, type,
         /* data */ {
             userhash: _getAtheerUserhash(userHashDict[action.participant.id])
         });
         break;
 
     case TOGGLE_FLASHLIGHT:
-        _sendEvent(store, _getSymbolDescription(type),
+        sendEvent(store, type,
         /* data */ {
             userhash: _getAtheerUserhash(userHashDict[action.participant.id])
         });
@@ -251,7 +251,7 @@ MiddlewareRegistry.register(store => next => action => {
     case PARTICIPANT_JOINED:
         userHashDict[action.participant.id] = action.participant.name;
         jitsiHashDict[action.participant.name] = action.participant.id;
-        _sendEvent(store, _getSymbolDescription(type),
+        sendEvent(store, type,
         /* data */ {
             participantId: action.participant.id,
             userhash: _getAtheerUserhash(action.participant.name)
@@ -259,7 +259,7 @@ MiddlewareRegistry.register(store => next => action => {
         break;
 
     case PARTICIPANT_LEFT:
-        _sendEvent(store, _getSymbolDescription(type),
+        sendEvent(store, type,
         /* data */ {
             participantId: action.participant.id,
             userhash: _getAtheerUserhash(userHashDict[action.participant.id])
@@ -275,7 +275,7 @@ MiddlewareRegistry.register(store => next => action => {
         if (!posY) {
             posY = 0.5;
         }
-        _sendEvent(store, _getSymbolDescription(type),
+        sendEvent(store, type,
         /* data */ {
             userhash: _getAtheerUserhash(userHashDict[action.participantId]),
             zoom: action.transform.scale.toString(),

@@ -57,7 +57,7 @@ In source code form, the Android SDK dependencies are locked/pinned by package.j
 
 This will pull in the dependencies in either binary format, or in source code format, somewhere under /node_modules/
 
-Third-party React Native _modules_, which Jitsi Meet SDK for Android depends on, are download by NPM in source code 
+Third-party React Native _modules_, which Jitsi Meet SDK for Android depends on, are download by NPM in source code
 or binary form. These need to be assembled into Maven artifacts, and then published to your local Maven repository.
 A script is provided to facilitate this. From the root of the jitsi-meet project repository, run:
 

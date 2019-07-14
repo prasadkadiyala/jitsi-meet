@@ -797,5 +797,8 @@
         "sendFeedback": "Send feedback",
         "terms": "Terms",
         "title": "Secure, fully featured, and completely free video conferencing"
+    },
+    "atheer": {
+        "zoomDisabled": "Zooming is disabled on this feed"
     }
 }

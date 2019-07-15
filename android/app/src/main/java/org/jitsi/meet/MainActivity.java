@@ -25,10 +25,13 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import org.jitsi.meet.sdk.AtheerInfo;
 import org.jitsi.meet.sdk.JitsiMeet;
 import org.jitsi.meet.sdk.JitsiMeetActivity;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
 import org.jitsi.meet.sdk.JitsiMeetUserInfo;
+import org.jitsi.meet.sdk.ProxyServerInfo;
+import org.jitsi.meet.sdk.RemoteVideoInfo;
 
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -87,11 +90,26 @@ public class MainActivity extends JitsiMeetActivity {
 
     @Override
     protected void initialize() {
+        ProxyServerInfo proxyServerInfo = new ProxyServerInfo();
+        proxyServerInfo.setHost("10.0.0.42");
+        proxyServerInfo.setPort("3120");
+        proxyServerInfo.setUsername("testing");
+        proxyServerInfo.setPassword("testingPassword");
+
+        RemoteVideoInfo remoteVideoInfo = new RemoteVideoInfo();
+        remoteVideoInfo.setHeight("720");
+        remoteVideoInfo.setWidth("360");
+
+        AtheerInfo atheerInfo = new AtheerInfo();
+        atheerInfo.setProxyServerInfo(proxyServerInfo);
+        atheerInfo.setRemoteVideoInfo(remoteVideoInfo);
+
         // Set default options
         JitsiMeetConferenceOptions defaultOptions
             = new JitsiMeetConferenceOptions.Builder()
                 .setWelcomePageEnabled(true)
                 .setServerURL(buildURL("https://meet.jit.atheerair.com"))
+                .setAtheerInfo(atheerInfo)
                 .build();
         JitsiMeet.setDefaultConferenceOptions(defaultOptions);
 

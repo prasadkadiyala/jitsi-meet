@@ -27,6 +27,10 @@ import java.net.URL;
  */
 public class ProxyServerInfo {
     /**
+     * Type.
+     */
+    private String type;
+    /**
      * Host.
      */
     private String host;
@@ -50,6 +54,10 @@ public class ProxyServerInfo {
 
     public ProxyServerInfo(Bundle b) {
         super();
+
+        if (b.containsKey("type")) {
+            type = b.getString("type");
+        }
 
         if (b.containsKey("host")) {
             host = b.getString("host");
@@ -75,6 +83,14 @@ public class ProxyServerInfo {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getHost() {
@@ -104,6 +120,10 @@ public class ProxyServerInfo {
 
     Bundle asBundle() {
         Bundle b = new Bundle();
+
+        if (type != null) {
+            b.putString("type", type);
+        }
 
         if (host != null) {
             b.putString("host", host);

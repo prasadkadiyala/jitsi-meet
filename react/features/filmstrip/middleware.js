@@ -1,5 +1,5 @@
 // @flow
-import { getAppProp } from '../app';
+import { getAppProp } from '../base/app';
 import { setLastN } from '../base/conference';
 import {
         pinParticipant,
@@ -50,8 +50,8 @@ MiddlewareRegistry.register(store => next => action => {
 function _setRoom({ dispatch, getState }, next, action) {
     const state = getState();
 
-    const remoteViewWidth = Number(getAppProp(state, 'remoteViewWidth'));
-    const remoteViewHeight = Number(getAppProp(state, 'remoteViewHeight'));
+    const remoteViewWidth = Number(getAppProp(state, 'atheerInfo.remoteVideoInfo.remoteViewWidth'));
+    const remoteViewHeight = Number(getAppProp(state, 'atheerInfo.remoteVideoInfo.remoteViewHeight'));
 
     Thumbnail.setRemoteViewSize(remoteViewWidth, remoteViewHeight);
     dispatch(setFilmstripVisible(true));

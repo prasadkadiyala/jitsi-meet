@@ -54,29 +54,24 @@ public class RemoteVideoInfo {
 
     public RemoteVideoInfo(Bundle b) {
         super();
-
-        if (b.containsKey("height")) {
-            height = b.getString("height");
+        if (b.containsKey("remoteViewHeight")) {
+            height = b.getString("remoteViewHeight");
         }
 
-        if (b.containsKey("width")) {
-            width = b.getString("width");
+        if (b.containsKey("remoteViewWidth")) {
+            width = b.getString("remoteViewWidth");
         }
-
     }
-
 
     Bundle asBundle() {
         Bundle b = new Bundle();
-
         if (height != null) {
-            b.putString("height", height);
+            b.putString("remoteViewHeight", height);
         }
 
         if (width != null) {
-            b.putString("port", width);
+            b.putString("remoteViewWidth", width);
         }
-
         return b;
     }
 }

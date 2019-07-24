@@ -58,12 +58,6 @@ public class JitsiMeetView extends BaseReactView<JitsiMeetViewListener>
     private static OnHasTorchListener hasTorchListener = null;
 
     /**
-     * Set the size of the remote video view. They need to be set before loadURLObject is called.
-     */
-    private String remoteVideoViewWidth;
-    private String remoteVideoViewHeight;
-
-    /**
      * Helper method to recursively merge 2 {@link Bundle} objects representing React Native props.
      *
      * @param a - The first {@link Bundle}.
@@ -199,16 +193,6 @@ public class JitsiMeetView extends BaseReactView<JitsiMeetViewListener>
         // "imperativeness" in React Component props by defining a unique value
         // per setProps() invocation.
         props.putLong("timestamp", System.currentTimeMillis());
-
-        // remote view size
-        if (remoteVideoViewWidth != null && !remoteVideoViewWidth.isEmpty() &&
-                remoteVideoViewHeight != null && !remoteVideoViewHeight.isEmpty()) {
-            props.putString("remoteViewWidth", remoteVideoViewWidth);
-            props.putString("remoteViewHeight", remoteVideoViewHeight);
-        } else {
-            Log.e(TAG, "RemoteVideoView size is not set. Call setRemoteVideoViewSize to set the size before you connect.");
-        }
-
         createReactRootView("App", props);
     }
 
@@ -236,11 +220,6 @@ public class JitsiMeetView extends BaseReactView<JitsiMeetViewListener>
     @Override
     protected void onExternalAPIEvent(String name, ReadableMap data) {
         onExternalAPIEvent(LISTENER_METHODS, name, data);
-    }
-
-    public void setRemoteVideoViewSize(int width, int height) {
-        remoteVideoViewWidth = Integer.toString(width);
-        remoteVideoViewHeight = Integer.toString(height);
     }
 
     public void sendEvent(String eventName) {

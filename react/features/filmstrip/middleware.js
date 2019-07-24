@@ -50,11 +50,8 @@ MiddlewareRegistry.register(store => next => action => {
 function _setRoom({ dispatch, getState }, next, action) {
     const state = getState();
 
-    //const remoteViewWidth = Number(getAppProp(state, 'remoteViewWidth'));
-    //const remoteViewHeight = Number(getAppProp(state, 'remoteViewHeight'));
-
-    const remoteViewWidth = 180;
-    const remoteViewHeight = 200;
+    const remoteViewWidth = Number(getAppProp(state, 'remoteViewWidth'));
+    const remoteViewHeight = Number(getAppProp(state, 'remoteViewHeight'));
 
     Thumbnail.setRemoteViewSize(remoteViewWidth, remoteViewHeight);
     dispatch(setFilmstripVisible(true));

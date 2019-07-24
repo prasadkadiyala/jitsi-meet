@@ -94,8 +94,8 @@ public class MainActivity extends JitsiMeetActivity {
         proxyServerInfo.setType("NONE");
         proxyServerInfo.setHost("10.0.0.42");
         proxyServerInfo.setPort("3120");
-        //proxyServerInfo.setUsername("");
-        //proxyServerInfo.setPassword("");
+        proxyServerInfo.setUsername("abc123");
+        proxyServerInfo.setPassword("test123");
 
         RemoteVideoInfo remoteVideoInfo = new RemoteVideoInfo();
         remoteVideoInfo.setHeight("720");

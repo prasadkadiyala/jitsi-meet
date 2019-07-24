@@ -46,7 +46,7 @@ else
 
     # First push React Native, if necessary
     if [[ ! -d ${MVN_REPO}/com/facebook/react/react-native/${RN_VERSION} ]]; then
-        echo "Pushing React Native ${RN_VERSION} to the Maven repo"
+        echo "Pushing React Native ${RN_VERSION} to the Maven repo ${MVN_REPO}"
         pushd ${THIS_DIR}/../../node_modules/react-native/android/com/facebook/react/react-native/${RN_VERSION}
         mvn \
             deploy:deploy-file \

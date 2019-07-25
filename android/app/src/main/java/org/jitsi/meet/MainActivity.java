@@ -98,8 +98,8 @@ public class MainActivity extends JitsiMeetActivity {
         proxyServerInfo.setPassword("test123");
 
         RemoteVideoInfo remoteVideoInfo = new RemoteVideoInfo();
-        remoteVideoInfo.setHeight("720");
-        remoteVideoInfo.setWidth("360");
+        remoteVideoInfo.setWidth("100");
+        remoteVideoInfo.setHeight("80");
 
         AtheerInfo atheerInfo = new AtheerInfo();
         atheerInfo.setProxyServerInfo(proxyServerInfo);

@@ -200,13 +200,7 @@ class Thumbnail extends Component<Props> {
             _toZoomParticipantLevel: _toZoomParticipantLevel
         } = this.props;
 
-        if (!Thumbnail.remoteViewWidth || Thumbnail.remoteViewWidth > DEFAULT_THUMBNAIL_WIDTH) {
-            Thumbnail.remoteViewWidth = DEFAULT_THUMBNAIL_WIDTH;
-        }
-        if (!Thumbnail.remoteViewHeight || Thumbnail.remoteViewHeight > DEFAULT_THUMBNAIL_HEIGHT) {
-            Thumbnail.remoteViewHeight = DEFAULT_THUMBNAIL_HEIGHT;
-        }
-
+        console.log("Sanjay" + Thumbnail.remoteViewWidth + Thumbnail.remoteViewHeight);
         let style = styles.thumbnail;
         let styleDimension = {
             width: Thumbnail.remoteViewWidth,
@@ -225,7 +219,7 @@ class Thumbnail extends Component<Props> {
         const participantInLargeVideo
             = participantId === largeVideo.participantId;
         const participantNotInLargeVideo
-            = participantId !== largeVideo.participantId;    
+            = participantId !== largeVideo.participantId;
         const videoMuted = !videoTrack || videoTrack.muted;
 
         const showTools = extendedToolsParticipant == participantId;

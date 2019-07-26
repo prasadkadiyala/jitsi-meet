@@ -99,11 +99,6 @@ type Props = {
     _onSwipeRight: ?Function,
 
     /**
-     * Handles long press on the thumbnail.
-     */
-    _onShowRemoteVideoMenu: ?Function,
-
-    /**
      * The color-schemed stylesheet of the feature.
      */
     _styles: StyleType,
@@ -170,6 +165,24 @@ type Props = {
  * @extends Component
  */
 class Thumbnail extends Component<Props> {
+
+    /**
+     * Initializes new Video Thumbnail component.
+     *
+     * @param {Object} props - Component props.
+     */
+    constructor(props) {
+        super(props);
+
+        // Bind event handlers so they are only bound once for every instance.
+        this._onClick = this._onClick.bind(this);
+        this._onPress = this._onPress.bind(this);
+        this._onClickMute = this._onClickMute.bind(this);
+        this._onClickFlashlight = this._onClickFlashlight.bind(this);
+        this._onSwipeRight = this._onSwipeRight.bind(this);
+        this._onShowTools = this._onShowTools.bind(this);
+        this._onHideTools = this._onHideTools.bind(this);
+    }
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -181,8 +194,6 @@ class Thumbnail extends Component<Props> {
             _audioTrack: audioTrack,
             _isEveryoneModerator,
             _largeVideo: largeVideo,
-            _onClick,
-            _onShowRemoteVideoMenu,
             _styles,
             _videoTrack: videoTrack,
             disableTint,
@@ -200,11 +211,10 @@ class Thumbnail extends Component<Props> {
             _toZoomParticipantLevel: _toZoomParticipantLevel
         } = this.props;
 
-        console.log("Sanjay" + Thumbnail.remoteViewWidth + Thumbnail.remoteViewHeight);
         let style = styles.thumbnail;
         let styleDimension = {
-            width: Thumbnail.remoteViewWidth,
-            height: Thumbnail.remoteViewHeight
+            width: DEFAULT_THUMBNAIL_WIDTH,
+            height: DEFAULT_THUMBNAIL_HEIGHT
         }
 
         // We don't render audio in any of the following:
@@ -252,206 +262,178 @@ class Thumbnail extends Component<Props> {
         }
 
         return (
-            <View style = { styles.thumbnailContainer }>
+          <Container style = { styles.thumbnailContainer }>
                 <GestureRecognizer
-                    onSwipeRight={this._onSwipeRight}
-                    config={config} >
-
+                  onSwipeRight={this._onSwipeRight}
+                  config={config} >
                     <Container
                         onClick = { this._onClick }
                         onPress = { this._onPress }
-                        style = { [ style, styleDimension ] }>
+                        style = { [
+                            style, styleDimension,
+                            participant.pinned && !tileView
+                                ? _styles.thumbnailPinned : null,
+                            this.props.styleOverrides || null
+                        ] }>
 
                         { renderAudio
                             && <Audio
                                 stream
                                     = { audioTrack.jitsiTrack.getOriginalStream() } /> }
 
-                        <ParticipantView
-                            avatarSize = { AVATAR_SIZE }
-                            participantId = { participantId }
-                            showAvatar = { participantNotInLargeVideo }
-                            showVideo = { true }
-                            zOrder = { 1 }
-                            isLargeVideo = { false } />
+                          <ParticipantView
+                              avatarSize = { AVATAR_SIZE }
+                              participantId = { participantId }
+                              showAvatar = { participantNotInLargeVideo }
+                              showVideo = { true }
+                              zOrder = { 1 }
+                              isLargeVideo = { false } />
 
-                        { participant.role === PARTICIPANT_ROLE.MODERATOR
-                            && <ModeratorIndicator /> }
-
-                        { participant.dominantSpeaker
-                            && <DominantSpeakerIndicator /> }
-
-                        { fromZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
-                                            styles.thumbnailToolBackgroundDisabled ] }>
-                            <Icon
-                                name = 'Disabled-Zooming'
-                                style = { [ styles.thumbnailToolIcon,
-                                            styles.thumbnailToolIconPressed ] } />
-                        </View> }
-
-                        { toZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
-                                            styles.thumbnailToolBackgroundHighlighted ] }>
-                            <Icon
-                                name = 'Active-Zooming'
-                                style = { [ styles.thumbnailToolIcon,
-                                            styles.thumbnailToolIconPressed ] } />
-                        </View> }
-
-                        <Container
-                            style = { styles.thumbnailIndicatorContainer }>
+                        {
+                          fromZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
+                                  styles.thumbnailToolBackgroundDisabled ] }>
+                              <Icon
+                                  name = 'Disabled-Zooming'
+                                  style = { [ styles.thumbnailToolIcon,
+                                              styles.thumbnailToolIconPressed ] } />
+                            </View>
+                        }
+                        {
+                          toZoomDisabled && <View style = { [ styles.thumbnailToolBackgroundMedium,
+                              styles.thumbnailToolBackgroundHighlighted ] }>
+                                <Icon
+                                    name = 'Active-Zooming'
+                                    style = { [ styles.thumbnailToolIcon,
+                                                styles.thumbnailToolIconPressed ] } />
+                            </View>
+                        }
+                        <Container style = { styles.thumbnailIndicatorContainer }>
                             { audioMuted
                                 && <AudioMutedIndicator /> }
 
                             { videoMuted
                                 && <VideoMutedIndicator /> }
                         </Container>
-
                     </Container>
-
                 </GestureRecognizer>
-
-                { allowToolTips && !showTools && <Container
-                    onClick = { this._onShowTools }
-                    style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
-                    <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
-                        onPress = { this._onShowTools }>
-                        <Icon name = 'atheer-menu-down'
-                        style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
-                    </View>
-                </Container> }
-
-                { allowToolTips && showTools && <Container
-                    onClick = { this._onHideTools }
-                    style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
-                    <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
-                        onPress = { this._onHideTools }>
-                        <Icon name = 'atheer-menu-up'
-                        style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
-                    </View>
-                </Container> }
-
-                { showTools && <View>
-                    <Container
-                        onClick = { this._onClickMute }
-                        style = { [ styles.thumbnailTools, styles.thumbnailToolsTopMargin ] }>
-                        <View style = { [ styles.thumbnailToolBackground,
-                                        audioMuted ? styles.thumbnailToolBackgroundDisabled : styles.thumbnailToolBackgroundNormal ] }
-                            onPress = { this._onClickMute }>
-                            <Icon name = 'atheer-mic'
-                            style = { [ styles.thumbnailToolIcon,
-                                    audioMuted ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                {
+                    allowToolTips && !showTools && <Container
+                        onClick = { this._onShowTools }
+                        style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
+                        <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
+                            onPress = { this._onShowTools }>
+                            <Icon name = 'atheer-menu-down'
+                            style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
                         </View>
                     </Container>
-                    <Container
-                        onClick = { this._onClickFlashlight }
-                        style = { [ styles.thumbnailTools, styles.thumbnailToolsMiddleMargin ] }>
-                        <View style = { [ styles.thumbnailToolBackground,
-                                        !hasTorch ? styles.thumbnailToolBackgroundDisabled : null,
-                                        (hasTorch && flashlightOn) ? styles.thumbnailToolBackgroundHighlighted : null,
-                                        (hasTorch && !flashlightOn) ? styles.thumbnailToolBackgroundNormal : null ] }>
-                            <Icon name = 'atheer-flashlight'
-                            style = { [ styles.thumbnailToolIcon,
-                                        (flashlightOn || !hasTorch) ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                }
+                {
+                    allowToolTips && showTools && <Container
+                        onClick = { this._onHideTools }
+                        style = { [ styles.thumbnailToolsSmall, styles.thumbnailToolsTopMargin ] }>
+                        <View style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
+                            onPress = { this._onHideTools }>
+                            <Icon name = 'atheer-menu-up'
+                            style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
                         </View>
                     </Container>
-
-                </View> }
-
-            </View>
+                }
+                {
+                    showTools && <View>
+                        <Container
+                            onClick = { this._onClickMute }
+                            style = { [ styles.thumbnailTools, styles.thumbnailToolsTopMargin ] }>
+                            <View style = { [ styles.thumbnailToolBackground,
+                                            audioMuted ? styles.thumbnailToolBackgroundDisabled : styles.thumbnailToolBackgroundNormal ] }
+                                onPress = { this._onClickMute }>
+                                <Icon name = 'atheer-mic'
+                                style = { [ styles.thumbnailToolIcon,
+                                        audioMuted ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                            </View>
+                        </Container>
+                        <Container
+                            onClick = { this._onClickFlashlight }
+                            style = { [ styles.thumbnailTools, styles.thumbnailToolsMiddleMargin ] }>
+                            <View style = { [ styles.thumbnailToolBackground,
+                                            !hasTorch ? styles.thumbnailToolBackgroundDisabled : null,
+                                            (hasTorch && flashlightOn) ? styles.thumbnailToolBackgroundHighlighted : null,
+                                            (hasTorch && !flashlightOn) ? styles.thumbnailToolBackgroundNormal : null ] }>
+                                <Icon name = 'atheer-flashlight'
+                                style = { [ styles.thumbnailToolIcon,
+                                            (flashlightOn || !hasTorch) ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />
+                            </View>
+                        </Container>
+                    </View>
+                }
+            </Container>
         );
     }
 
+    /**
+     * Handles click/tap event on the thumbnail.
+     *
+     * @returns {void}
+     */
+    _onClick() {
+        const { dispatch, participant } = this.props;
+
+        dispatch(pinParticipant(participant.id));
+        dispatch(selectParticipantInLargeVideo());
+    }
+
+    _onPress() {
+        const { dispatch, participant } = this.props;
+
+        dispatch(showParticipantTools(participant.id));
+    }
+
+    _onShowTools() {
+        const { dispatch, participant } = this.props;
+
+        dispatch(showParticipantTools(participant.id));
+    }
+
+    _onHideTools() {
+        const { dispatch, participant } = this.props;
+
+        dispatch(hideParticipantTools(null));
+    }
+
+    _onClickMute() {
+        const { dispatch, participant } = this.props;
+
+        const audioTrack = this.props._audioTrack;
+        const audioMuted = !audioTrack || audioTrack.muted;
+
+        if (!audioMuted) {
+            dispatch(muteMic(participant.id));
+        }
+
+    }
+
+    _onClickFlashlight() {
+        const { dispatch, participant } = this.props;
+
+        const participantsFlashOn = this.props.participantsFlashOn;
+        const participantId = participant.id;
+        const flashlightOn = participantsFlashOn && participantsFlashOn.indexOf(participantId) != -1;
+
+        dispatch(toggleFlashlight(participant.id, !flashlightOn));
+    }
+
+    _onSwipeRight(gestureState) {
+        const { dispatch, participant } = this.props;
+
+        dispatch(setFilmstripVisible(false));
+    }
+
     static setRemoteViewSize(width, height) {
-        Thumbnail.remoteViewWidth = width;
-        Thumbnail.remoteViewHeight = height;
+        Thumbnail.remoteViewWidth = DEFAULT_THUMBNAIL_WIDTH;
+        Thumbnail.remoteViewHeight = DEFAULT_THUMBNAIL_HEIGHT;
     }
 }
 
-/**
- * Maps part of redux actions to component's props.
- *
- * @param {Function} dispatch - Redux's {@code dispatch} function.
- * @param {Props} ownProps - The own props of the component.
- * @returns {{
- *     _onClick: Function,
- *     _onShowRemoteVideoMenu: Function
- * }}
- */
-function _mapDispatchToProps(dispatch: Function, ownProps): Object {
-    return {
-        /**
-         * Handles click/tap event on the thumbnail.
-         *
-         * @protected
-         * @returns {void}
-         */
-        _onClick() {
-            const { participant, tileView } = ownProps;
 
-            dispatch(pinParticipant(participant.id));
-            dispatch(selectParticipantInLargeVideo());
-        },
-
-        /**
-         * Handles long press on the thumbnail.
-         *
-         * @returns {void}
-         */
-        _onShowRemoteVideoMenu() {
-            const { participant } = ownProps;
-
-            dispatch(openDialog(RemoteVideoMenu, {
-                participant
-            }));
-        },
-
-        _onPress() {
-            const { dispatch, participant } = this.props;
-
-            dispatch(showParticipantTools(participant.id));
-        },
-
-        _onShowTools() {
-            const { dispatch, participant } = this.props;
-
-            dispatch(showParticipantTools(participant.id));
-        },
-
-        _onHideTools() {
-            const { dispatch, participant } = this.props;
-
-            dispatch(hideParticipantTools(null));
-        },
-
-        _onClickMute() {
-            const { dispatch, participant } = this.props;
-
-            const audioTrack = this.props._audioTrack;
-            const audioMuted = !audioTrack || audioTrack.muted;
-
-            if (!audioMuted) {
-                dispatch(muteMic(participant.id));
-            }
-
-        },
-
-        _onClickFlashlight() {
-            const { dispatch, participant } = this.props;
-
-            const participantsFlashOn = this.props.participantsFlashOn;
-            const participantId = participant.id;
-            const flashlightOn = participantsFlashOn && participantsFlashOn.indexOf(participantId) != -1;
-
-            dispatch(toggleFlashlight(participant.id, !flashlightOn));
-        },
-
-        _onSwipeRight(gestureState) {
-            const { dispatch, participant } = this.props;
-
-            dispatch(setFilmstripVisible(false));
-        },
-    };
-}
 
 /**
  * Function that maps parts of Redux state tree into component props.
@@ -503,4 +485,4 @@ function _mapStateToProps(state, ownProps) {
     };
 }
 
-export default connect(_mapStateToProps, _mapDispatchToProps)(Thumbnail);
+export default connect(_mapStateToProps)(Thumbnail);

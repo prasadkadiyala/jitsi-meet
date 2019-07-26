@@ -167,7 +167,7 @@ export default {
     },
 
     thumbnailContainer: {
-        height: 300,
+        height: 100,
         width: 100,
         alignItems: 'flex-start',
         flex: 1,

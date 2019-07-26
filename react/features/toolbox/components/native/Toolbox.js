@@ -210,6 +210,48 @@ class Toolbox extends Component<Props, State> {
      */
     _renderToolbar() {
         return null;
+        
+        const { _chatEnabled, _styles } = this.props;
+        const buttonSize = this._calculateButtonSize();
+        let { buttonStyles, toggledButtonStyles } = _styles;
+
+        if (buttonSize > 0) {
+            const extraButtonStyle = {
+                borderRadius: buttonSize / 2,
+                height: buttonSize,
+                width: buttonSize
+            };
+
+            // XXX The following width equality checks attempt to minimize
+            // unnecessary objects and possibly re-renders.
+            if (buttonStyles.style.width !== extraButtonStyle.width) {
+                buttonStyles = {
+                    ...buttonStyles,
+                    style: [ buttonStyles.style, extraButtonStyle ]
+                };
+            }
+            if (toggledButtonStyles.style.width !== extraButtonStyle.width) {
+                toggledButtonStyles = {
+                    ...toggledButtonStyles,
+                    style: [ toggledButtonStyles.style, extraButtonStyle ]
+                };
+            }
+        } else {
+            // XXX In order to avoid a weird visual effect in which the toolbar
+            // is (visually) rendered and then visibly changes its size, it is
+            // rendered only after we've figured out the width available to the
+            // toolbar.
+            return null;
+        }
+
+        return (
+            <View
+                pointerEvents = 'box-none'
+                style = { styles.toolbar }>
+                <HangupButton
+                    styles = { _styles.hangupButtonStyles } />
+            </View>
+        );
     }
 }
 

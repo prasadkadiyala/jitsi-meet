@@ -13,7 +13,7 @@ import {
 } from '../../../base/responsive-ui';
 
 import { isFilmstripVisible } from '../../functions';
-
+import { getLocalParticipant } from '../../../base/participants';
 import LocalThumbnail from './LocalThumbnail';
 import styles from './styles';
 import Thumbnail from './Thumbnail';
@@ -58,7 +58,12 @@ type Props = {
 
     _participantsFlashOn: Array<any>,
 
-    _participantsFlashDisabled: Array<any>
+    _participantsFlashDisabled: Array<any>,
+
+    /**
+     * The local participant.
+     */
+    _localParticipant: Object
 };
 
 /**
@@ -135,20 +140,22 @@ class Filmstrip extends Component<Props> {
                     this._separateLocalThumbnail
                         && !isNarrowAspectRatio_
                         && this.props._visible
-                        && <LocalThumbnail />
+                        && <Thumbnail participant = { this.props._localParticipant }  />
                 }
                 { !this.props._forceHidden && !this.props._visible && !this.props._isGlass && <Container
                     style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark ] }
                     onClick = { this._onExpandFilmstrip } >
                         <Icon name = 'navigate_before'
                         style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
-                </Container> }
+                </Container>
+                }
                 { !this.props._forceHidden && this.props._visible && !this.props._isGlass && <Container
                     style = { [ styles.thumbnailToolBackgroundSmall, styles.thumbnailToolBackgroundDark, hideFilmStripStyle ] }
                     onClick = { this._onHideFilmstrip } >
                         <Icon name = 'navigate_next'
                         style = { [ styles.thumbnailToolIcon, styles.thumbnailToolIconPressed ] } />
-                </Container> }
+                </Container>
+                }
                 { !this.props._forceHidden && this.props._visible && <ScrollView
                     horizontal = { true }
                     showsHorizontalScrollIndicator = { false }
@@ -157,11 +164,10 @@ class Filmstrip extends Component<Props> {
                     {
                         !this._separateLocalThumbnail
                             && !isNarrowAspectRatio_
-                            && <LocalThumbnail />
+                            && <Thumbnail participant = { this.props._localParticipant }  />
                     }
                     {
                         /* eslint-disable react/jsx-wrap-multilines */
-
                         this._sort(
                                 this.props._participants,
                                 isNarrowAspectRatio_)
@@ -178,14 +184,15 @@ class Filmstrip extends Component<Props> {
                     {
                         !this._separateLocalThumbnail
                             && isNarrowAspectRatio_
-                            && <LocalThumbnail />
+                            && <Thumbnail participant = { this.props._localParticipant }  />
                     }
-                </ScrollView> }
+                </ScrollView>
+                }
                 {
                     this._separateLocalThumbnail
                         && isNarrowAspectRatio_
                         && this.props._visible
-                        && <LocalThumbnail />
+                        && <Thumbnail participant = { this.props._localParticipant }  />
                 }
             </Container>
         );
@@ -280,7 +287,8 @@ function _mapStateToProps(state) {
         _isGlass: isGlass,
         _extendedToolsParticipant: extendedToolsParticipant,
         _participantsFlashOn: participantsFlashOn,
-        _participantsFlashDisabled: participantsFlashDisabled
+        _participantsFlashDisabled: participantsFlashDisabled,
+        _localParticipant: getLocalParticipant(state)
     };
 }
 

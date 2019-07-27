@@ -210,7 +210,7 @@ class Toolbox extends Component<Props, State> {
      */
     _renderToolbar() {
         return null;
-        
+
         const { _chatEnabled, _styles } = this.props;
         const buttonSize = this._calculateButtonSize();
         let { buttonStyles, toggledButtonStyles } = _styles;
@@ -248,8 +248,17 @@ class Toolbox extends Component<Props, State> {
             <View
                 pointerEvents = 'box-none'
                 style = { styles.toolbar }>
+                <AudioMuteButton
+                    styles = { buttonStyles }
+                    toggledStyles = { toggledButtonStyles } />
                 <HangupButton
                     styles = { _styles.hangupButtonStyles } />
+                <VideoMuteButton
+                    styles = { buttonStyles }
+                    toggledStyles = { toggledButtonStyles } />
+                <OverflowMenuButton
+                    styles = { buttonStyles }
+                    toggledStyles = { toggledButtonStyles } />
             </View>
         );
     }

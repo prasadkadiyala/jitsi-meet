@@ -357,7 +357,8 @@ class Thumbnail extends Component<Props> {
                             <View style = { [ styles.thumbnailToolBackground,
                                             !hasTorch ? styles.thumbnailToolBackgroundDisabled : null,
                                             (hasTorch && flashlightOn) ? styles.thumbnailToolBackgroundHighlighted : null,
-                                            (hasTorch && !flashlightOn) ? styles.thumbnailToolBackgroundNormal : null ] }>
+                                            (hasTorch && !flashlightOn) ? styles.thumbnailToolBackgroundNormal : null ] }
+                                onPress = { this._onClickFlashlight } >
                                 <Icon name = 'atheer-flashlight'
                                 style = { [ styles.thumbnailToolIcon,
                                             (flashlightOn || !hasTorch) ? styles.thumbnailToolIconPressed : styles.thumbnailToolIconNoraml ] } />

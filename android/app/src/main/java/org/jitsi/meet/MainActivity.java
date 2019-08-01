@@ -111,6 +111,9 @@ public class MainActivity extends JitsiMeetActivity {
                 .setWelcomePageEnabled(true)
                 .setServerURL(buildURL("https://meet.jit.atheerair.com"))
                 .setAtheerInfo(atheerInfo)
+                .setFeatureFlag("pip.enabled", false)
+                .setFeatureFlag("calendar.enabled", false)
+                .setFeatureFlag("chat.enabled", false)
                 .build();
         JitsiMeet.setDefaultConferenceOptions(defaultOptions);
 

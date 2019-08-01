@@ -32,6 +32,8 @@ import {
 import { MiddlewareRegistry } from '../../base/redux';
 import { toURLString } from '../../base/util';
 import { ENTER_PICTURE_IN_PICTURE } from '../picture-in-picture';
+import { appNavigate } from '../../app/actions';
+import { disconnect } from '../../base/connection';
 
 import { sendEvent } from './functions';
 
@@ -56,6 +58,16 @@ var Store: Object;
 var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 var IsGlass = false;
+
+RCTDeviceEventEmitter.addListener('hangUp', function() {
+    if (Store) {
+        if (navigator.product === 'ReactNative') {
+            Store.dispatch(appNavigate(undefined));
+        } else {
+            Store.dispatch(disconnect(true));
+        }
+    }
+});
 
 RCTDeviceEventEmitter.addListener('showRemoteView', function(data) {
     Object.keys(data).forEach((key) => {

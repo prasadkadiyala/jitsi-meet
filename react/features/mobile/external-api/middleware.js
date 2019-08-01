@@ -196,10 +196,10 @@ MiddlewareRegistry.register(store => next => action => {
         break;
     }
 
-    case CONFERENCE_JOINED:
     case CONFERENCE_LEFT:
         jitsiHashDict = [];
         userHashDict = [];
+    case CONFERENCE_JOINED:
     case CONFERENCE_WILL_JOIN:
         _sendConferenceEvent(store, action);
         break;
@@ -487,7 +487,7 @@ function _swallowEvent(store, action, data) {
 
 // TODO(Hao): Remove this function once Web jitsi and Android jitsi is merged
 function _getAtheerUserhash(fullUsername) {
-    if (!fullUsername) {
+    if (!fullUsername || fullUsername == undefined) {
         return;
     }
     var splitParts = fullUsername.split(displayNameSplit);

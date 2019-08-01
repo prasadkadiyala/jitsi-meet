@@ -17,6 +17,8 @@ import { Icon } from '../../base/font-icons';
 
 import { AVATAR_SIZE } from './styles';
 
+const logger = require('jitsi-meet-logger').getLogger(__filename);
+
 /**
  * The type of the React {@link Component} props of {@link LargeVideo}.
  */
@@ -46,7 +48,7 @@ type Props = {
     /**
      * Callback to invoke when the {@code LargeVideo} is clicked/pressed.
      */
-    onClick: Function,
+    onPress: Function,
 };
 
 /**
@@ -146,7 +148,7 @@ class LargeVideo extends Component<Props, State> {
         const {
             _participantId,
             _styles,
-            onClick
+            onPress
         } = this.props;
         const { t } = this.props;
 
@@ -181,7 +183,7 @@ class LargeVideo extends Component<Props, State> {
                 onDimensionsChanged = { this._onDimensionsChanged }>
                 <ParticipantView
                     avatarSize = { avatarSize }
-                    onPress = { onClick }
+                    onPress = { onPress }
                     participantId = { _participantId }
                     style = { _styles.largeVideo }
                     testHintId = 'org.jitsi.meet.LargeVideo'
@@ -190,11 +192,11 @@ class LargeVideo extends Component<Props, State> {
                     zoomEnabled = { zoomEnabled }
                     zoomUnlocked = { zoomUnlocked }
                     isLargeVideo = { true } />
-                    { this.props._videoCallToast && <Container style = { styles.zoomToastBackground }>
+                    { this.props._videoCallToast && <Container style = { _styles.zoomToastBackground }>
                     <Icon
                         name = 'Disabled-Zooming'
-                        style = { styles.zoomToastIcon } />
-                    <Text style = { styles.zoomToastTest }>
+                        style = { _styles.zoomToastIcon } />
+                    <Text style = { _styles.zoomToastTest }>
                         { t('atheer.zoomDisabled') }
                     </Text>
                 </Container> }

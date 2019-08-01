@@ -158,7 +158,7 @@ class Conference extends AbstractConference<Props, *> {
 
         // Show the toolbox if we are the only participant; otherwise, the whole
         // UI looks too unpopulated the LargeVideo visible.
-        this.props._participantCount === 1 && this._setToolboxVisible(true);
+        this.props._participantCount === 1 && this._setToolboxVisible(false);
     }
 
     /**
@@ -301,7 +301,7 @@ class Conference extends AbstractConference<Props, *> {
      * @returns {void}
      */
     _onClick() {
-        this._setToolboxVisible(!this.props._toolboxVisible);
+        this._setToolboxVisible(false);
         this._clearExtendedTools();
     }
 

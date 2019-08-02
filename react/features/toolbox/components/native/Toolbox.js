@@ -209,6 +209,8 @@ class Toolbox extends Component<Props, State> {
      * @returns {React$Node}
      */
     _renderToolbar() {
+        return null;
+        
         const { _chatEnabled, _styles } = this.props;
         const buttonSize = this._calculateButtonSize();
         let { buttonStyles, toggledButtonStyles } = _styles;

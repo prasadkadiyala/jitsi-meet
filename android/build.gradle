@@ -161,8 +161,8 @@ ext {
 
     // Maven repo where artifacts will be published
     mavenRepo = "s3://atheer-maven/releases"
-    mavenRepoAccessKey = "AKIAVJVYS7MVZPOMNTFY"
-    mavenRepoSecretKey = "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"
+    mavenRepoAccessKey = "Null"
+    mavenRepoSecretKey = "Null"
 
     // Glide
     excludeAppGlideModule = true

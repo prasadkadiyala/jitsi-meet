@@ -517,10 +517,9 @@ const _throttledNotifyParticipantConnected = throttle(dispatch => {
         };
     }
 
-    if (notificationProps) {
-        dispatch(
-            showNotification(notificationProps, NOTIFICATION_TIMEOUT));
-    }
+    //if (notificationProps) {
+    //    dispatch(showNotification(notificationProps, NOTIFICATION_TIMEOUT));
+    //}
 
     joinedParticipantsNames = [];
 

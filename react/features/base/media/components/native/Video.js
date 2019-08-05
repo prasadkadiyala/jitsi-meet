@@ -114,7 +114,7 @@ export default class Video extends Component<Props> {
             // zoom", it implements onPress, of course.
             return (
                 <VideoTransform
-                    enabled = { zoomEnabled }
+                    enabled = { true }
                     onPress = { onPress }
                     streamId = { stream.id }
                     style = { style }

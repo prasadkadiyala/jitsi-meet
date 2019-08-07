@@ -29,6 +29,9 @@ var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 const { WebRTCModule, DeviceModule } = NativeModules;
 
+const { RNEventEmitter } = NativeModules;
+const emitter = new NativeEventEmitter(RNEventEmitter);
+
 RCTDeviceEventEmitter.addListener('toggleAudio', function(data) {
     Object.keys(data).forEach((key) => {
         if (key == 'audioState' && Store) {
@@ -38,11 +41,30 @@ RCTDeviceEventEmitter.addListener('toggleAudio', function(data) {
     });
 });
 
+emitter.addListener(
+    'toggleAudio',
+    (data) => {
+        if (Store) {
+            console.log('Event:toggleMute audioState=' + data['audioState']);
+            Store.dispatch(setAudioMuted((data['audioState'] == 'true' ? true : false), true));
+        }
+    }
+);
+
 RCTDeviceEventEmitter.addListener('toggleCamera', function(data) {
     if (Store) {
         Store.dispatch(toggleCameraFacingMode());
     }
 });
+
+emitter.addListener(
+    'toggleCamera',
+    (data) => {
+        if (Store) {
+            Store.dispatch(toggleCameraFacingMode());
+        }
+    }
+);
 
 RCTDeviceEventEmitter.addListener('toggleFlashlight', function(data) {
     Object.keys(data).forEach((key) => {
@@ -60,40 +82,6 @@ RCTDeviceEventEmitter.addListener('hasTorch', function() {
         DeviceModule.hasTorch(hasTorch);
     });
 });
-
-const { RNEventEmitter } = NativeModules;
-const emitter = new NativeEventEmitter(RNEventEmitter);
-
-emitter.addListener(
-    'hangUp',
-    (data) => {
-        console.log('Hangup');
-        if (Store) {
-            Store.dispatch(disconnect(true));
-        }
-    }
-);
-
-emitter.addListener(
-    'toggleCamera',
-    (data) => {
-        console.log('toggel camera');
-        if (Store) {
-            Store.dispatch(toggleCameraFacingMode());
-        }
-    }
-);
-
-emitter.addListener(
-    'toggleAudio',
-    (data) => {
-        console.log('toggel audio');
-        if (Store) {
-            console.log('Event:toggleMute audioState=' + data['audioState']);
-            Store.dispatch(setAudioMuted((data['audioState'] == 'true' ? true : false), true));
-        }
-    }
-);
 
 emitter.addListener(
     'initCameraFacingMode',

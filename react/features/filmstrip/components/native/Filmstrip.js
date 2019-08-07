@@ -104,7 +104,7 @@ class Filmstrip extends Component<Props> {
         // indicators such as moderator, audio and video muted, etc. For now we
         // do not have much of a choice but to continue rendering LocalThumbnail
         // as any other remote Thumbnail on Android.
-        this._separateLocalThumbnail = Platform.OS !== 'android';
+        this._separateLocalThumbnail = false;
         this._onExpandFilmstrip = this._onExpandFilmstrip.bind(this);
         this._onHideFilmstrip = this._onHideFilmstrip.bind(this);
     }

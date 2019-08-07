@@ -1,5 +1,5 @@
 // @flow
-
+import { NativeEventEmitter, NativeModules } from 'react-native';
 import {
     CONFERENCE_FAILED,
     CONFERENCE_JOINED,
@@ -59,7 +59,23 @@ var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 var IsGlass = false;
 
+const { RNEventEmitter } = NativeModules;
+
+const emitter = new NativeEventEmitter(RNEventEmitter);
+
 RCTDeviceEventEmitter.addListener('hangUp', function() {
+    if (Store) {
+        if (navigator.product === 'ReactNative') {
+            Store.dispatch(appNavigate(undefined));
+        } else {
+            Store.dispatch(disconnect(true));
+        }
+    }
+});
+
+emitter.addListener(
+    'hangUp',
+    (data) => {
     if (Store) {
         if (navigator.product === 'ReactNative') {
             Store.dispatch(appNavigate(undefined));
@@ -132,7 +148,51 @@ RCTDeviceEventEmitter.addListener('videoCallZoom', function(data) {
     }
 });
 
+emitter.addListener(
+    'videoCallZoom',
+    (data) => {
+    if (Store) {
+        var userhash = null;
+        var zoom = null;
+        var x = null;
+        var y = null;
+        if (data != null) {
+            Object.keys(data).forEach((key) => {
+                if (key === 'userhash') {
+                    logger.log('Event:videoCallZoom userhash=' + data[key]);
+                    userhash = _getJitsiParticipantId(data[key]);
+                } else if (key === 'zoom') {
+                    logger.log('Event:videoCallZoom zoom=' + data[key]);
+                    zoom = data[key];
+                } else if (key === 'x') {
+                    logger.log('Event:videoCallZoom x=' + data[key]);
+                    x = data[key];
+                } else if (key === 'y') {
+                    logger.log('Event:videoCallZoom y=' + data[key]);
+                    y = data[key];
+                }
+            });
+            Store.dispatch(videoCallZoom(userhash, zoom, x, y));
+        }
+    }
+});
+
 RCTDeviceEventEmitter.addListener('disableFlashlight', function(data) {
+    if (Store && data != null) {
+        var userhash = null;
+        Object.keys(data).forEach((key) => {
+            if (key === 'userhash') {
+                logger.log('Event:disableFlashlight userhash=' + data[key]);
+                userhash = _getJitsiParticipantId(data[key]);
+            }
+        });
+        Store.dispatch(disableFlashlight(userhash));
+    }
+});
+
+emitter.addListener(
+    'disableFlashlight',
+    (data) => {
     if (Store && data != null) {
         var userhash = null;
         Object.keys(data).forEach((key) => {
@@ -158,7 +218,41 @@ RCTDeviceEventEmitter.addListener('enableFlashlight', function(data) {
     }
 });
 
+emitter.addListener(
+    'enableFlashlight',
+    (data) => {
+    if (Store && data != null) {
+        var userhash = null;
+        Object.keys(data).forEach((key) => {
+            if (key === 'userhash') {
+                logger.log('Event:enableFlashlight userhash=' + data[key]);
+                userhash = _getJitsiParticipantId(data[key]);
+            }
+        });
+        Store.dispatch(enableFlashlight(userhash));
+    }
+});
+
 RCTDeviceEventEmitter.addListener('updateFlashlightStatus', function(data) {
+    if (Store && data != null) {
+        var userhash = null;
+        var flashlightStatus = null;
+        Object.keys(data).forEach((key) => {
+            if (key === 'userhash') {
+                logger.log('Event:updateFlashlightStatus userhash=' + data[key]);
+                userhash = _getJitsiParticipantId(data[key]);
+            } else if (key === 'flashlightStatus') {
+                logger.log('Event:updateFlashlightStatus flashlightStatus=' + data[key]);
+                flashlightStatus = data[key];
+            }
+        });
+        Store.dispatch(updateFlashlightStatus(userhash, flashlightStatus));
+    }
+});
+
+emitter.addListener(
+    'updateFlashlightStatus',
+    (data) => {
     if (Store && data != null) {
         var userhash = null;
         var flashlightStatus = null;

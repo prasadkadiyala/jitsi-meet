@@ -1,5 +1,5 @@
 // @flow
-import { NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules } from 'react-native';
 import {
     createStartAudioOnlyEvent,
     createStartMutedConfigurationEvent,
@@ -11,6 +11,7 @@ import JitsiMeetJS from '../lib-jitsi-meet';
 import { MiddlewareRegistry } from '../redux';
 import { getPropertyValue } from '../settings';
 import { setTrackMuted, TRACK_ADDED } from '../tracks';
+import { disconnect } from '../connection';
 
 import { setAudioMuted, setCameraFacingMode, toggleCameraFacingMode, setVideoMuted } from './actions';
 import { CAMERA_FACING_MODE } from './constants';
@@ -59,6 +60,51 @@ RCTDeviceEventEmitter.addListener('hasTorch', function() {
         DeviceModule.hasTorch(hasTorch);
     });
 });
+
+const { RNEventEmitter } = NativeModules;
+const emitter = new NativeEventEmitter(RNEventEmitter);
+
+emitter.addListener(
+    'hangUp',
+    (data) => {
+        console.log('Hangup');
+        if (Store) {
+            Store.dispatch(disconnect(true));
+        }
+    }
+);
+
+emitter.addListener(
+    'toggleCamera',
+    (data) => {
+        console.log('toggel camera');
+        if (Store) {
+            Store.dispatch(toggleCameraFacingMode());
+        }
+    }
+);
+
+emitter.addListener(
+    'toggleAudio',
+    (data) => {
+        console.log('toggel audio');
+        if (Store) {
+            console.log('Event:toggleMute audioState=' + data['audioState']);
+            Store.dispatch(setAudioMuted((data['audioState'] == 'true' ? true : false), true));
+        }
+    }
+);
+
+emitter.addListener(
+    'initCameraFacingMode',
+    (data) => {
+        console.log("initCameraFacingMode");
+        if (Store) {
+            console.log('Event:initCameraFacingMode facingMode=' + data['facingMode']);
+            Store.dispatch(setCameraFacingMode(data['facingMode'] == 'user' ? CAMERA_FACING_MODE.USER : CAMERA_FACING_MODE.ENVIRONMENT));
+        }
+    }
+);
 
 /**
  * Implements the entry point of the middleware of the feature base/media.

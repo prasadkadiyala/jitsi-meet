@@ -20,6 +20,8 @@ import {
     VIDEO_QUALITY_LEVELS
 } from './constants';
 
+import { NativeEventEmitter, NativeModules } from 'react-native';
+
 // TODO (Karim): Find a cleaner way to send this ID.
 // I tried to send this value with appProp but didn't work because I don't have access to a state.
 // For now falling back to sending it through an event
@@ -49,6 +51,19 @@ RCTDeviceEventEmitter.addListener('setParticipantAvatar', function(data) {
         }
     });
 });
+
+const { RNEventEmitter } = NativeModules;
+
+const emitter = new NativeEventEmitter(RNEventEmitter);
+
+const subscription = emitter.addListener(
+    'setParticipantName',
+    (data) => {
+        console.log('Hao check listener setParticipantName');
+        console.log(data.userHash);
+        ParticipantName = data.userHash;
+    }
+);
 
 const logger = require('jitsi-meet-logger').getLogger(__filename);
 

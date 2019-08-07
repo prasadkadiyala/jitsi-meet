@@ -103,9 +103,9 @@ export class App extends AbstractApp {
             dispatch(updateFlags(this.props.flags));
             dispatch(updateSettings(this.props.userInfo || {}));
 
-            if(this.props.atheerInfo && this.props.atheerInfo.proxyServerInfo) {
+            /*if(this.props.atheerInfo && this.props.atheerInfo.proxyServerInfo) {
                 WebRTCModule.initProxyServerInfo(this.props.atheerInfo.proxyServerInfo.type, this.props.atheerInfo.proxyServerInfo.host, this.props.atheerInfo.proxyServerInfo.port, this.props.atheerInfo.proxyServerInfo.username, this.props.atheerInfo.proxyServerInfo.password);
-            }
+            }*/
         });
     }
 

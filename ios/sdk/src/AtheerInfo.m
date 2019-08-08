@@ -15,31 +15,34 @@
  */
 
 #import "AtheerInfo+Private.h"
+#import "ProxyServerInfo.h"
+#import "ProxyServerInfo+Private.h"
+#import "RemoteVideoInfo+Private.h"
 
 @implementation AtheerInfo
 
 - (instancetype)initWithProxyServerInfo:(ProxyServerInfo *)proxyServerInfo
-                           andRemoteVideoInfo:(RemoteVideoInfo *)remoteVideoInfo {
+                     andRemoteVideoInfo:(RemoteVideoInfo *)remoteVideoInfo {
     self = [super init];
     if (self) {
         self.proxyServerInfo = proxyServerInfo;
         self.remoteVideoInfo = remoteVideoInfo;
     }
-
+    
     return self;
 }
 
 - (NSDictionary *)asDict {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-
+    
     if (self.proxyServerInfo != nil) {
         dict[@"proxyServerInfo"] = [self.proxyServerInfo asDict];
     }
-
+    
     if (self.remoteVideoInfo != nil) {
         dict[@"remoteVideoInfo"] = [self.remoteVideoInfo asDict];
     }
-
+    
     return dict;
 }
 

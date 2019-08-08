@@ -42,8 +42,8 @@
 @property (nonatomic, copy, nullable) NSString *password;
 
 - (instancetype _Nullable)initWithType:(NSString *_Nullable)type
-                                     andHost:(NSString *_Nullable)host
-                                     andPort:(NSString *_Nullable)port
-                                     andUsername:(NSString *_Nullable)username
-                                     andPassword:(NSString *_Nullable)email;
+                               andHost:(NSString *_Nullable)host
+                               andPort:(NSString *_Nullable)port
+                           andUsername:(NSString *_Nullable)username
+                           andPassword:(NSString *_Nullable)email;
 @end

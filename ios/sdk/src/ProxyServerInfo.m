@@ -19,10 +19,10 @@
 @implementation ProxyServerInfo
 
 - (instancetype)initWithType:(NSString *)type
-                           andHost:(NSString *)host
-                          andPort:(NSString *)port
-                          andUsername:(NSString *)username
-                          andPassword:(NSString *)password {
+                     andHost:(NSString *)host
+                     andPort:(NSString *)port
+                 andUsername:(NSString *)username
+                 andPassword:(NSString *)password {
     self = [super init];
     if (self) {
         self.type = type;
@@ -31,33 +31,33 @@
         self.username = username;
         self.password = password;
     }
-
+    
     return self;
 }
 
 - (NSDictionary *)asDict {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-
+    
     if (self.type != nil) {
         dict[@"type"] = self.type;
     }
-
+    
     if (self.host != nil) {
         dict[@"host"] = self.host;
     }
-
+    
     if (self.port != nil) {
         dict[@"port"] = self.port;
     }
-
+    
     if (self.username != nil) {
         dict[@"username"] = self.username;
     }
-
+    
     if (self.password != nil) {
         dict[@"password"] = self.password;
     }
-
+    
     return dict;
 }
 

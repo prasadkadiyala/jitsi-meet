@@ -31,6 +31,6 @@
 @property (nonatomic, nullable) RemoteVideoInfo *remoteVideoInfo;
 
 - (instancetype _Nullable)initWithProxyServerInfo:(ProxyServerInfo *_Nullable)proxyServerInfo
-                                     andRemoteVideoInfo:(RemoteVideoInfo *_Nullable)remoteVideoInfo;
+                               andRemoteVideoInfo:(RemoteVideoInfo *_Nullable)remoteVideoInfo;
 
 @end
